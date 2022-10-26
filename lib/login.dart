@@ -158,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.of(context).pop();
 
                   // Send emailQuery[0] to the home.dart
-                  Navigator.pushNamed(context, '/home', arguments: emailQuery[0]);
+                  Navigator.pushNamed(context, '/main', arguments: emailQuery[0]);
                 },
                 child: const Text('Se connecter'),
               ),

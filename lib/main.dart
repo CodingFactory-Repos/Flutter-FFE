@@ -21,9 +21,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final Map? user = ModalRoute.of(context)?.settings.arguments as Map?;
+
     return MaterialApp(
       title: 'Flutter Demo',
       routes: {
+        '/main': (context) => MyApp(db: db),
         '/home': (context) => HomePage(db: db, user: user, title: 'UwU', ),
         '/login': (context) => LoginPage(db: db, title: 'Se connecter'),
         '/register': (context) => RegisterPage(db: db, title: 'S\'inscrire'),
@@ -41,7 +44,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.orange,
       ),
-      home: LoginPage(db: db, title: 'Se connecter'),
+      home: user == null ? LoginPage(db: db, title: 'Se connecter') : HomePage(db: db, user: user, title: 'UwU', ),
       debugShowCheckedModeBanner: false,
     );
   }

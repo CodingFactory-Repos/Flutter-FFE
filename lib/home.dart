@@ -48,8 +48,6 @@ class _HomePageState extends State<HomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    final Map arg = ModalRoute.of(context)!.settings.arguments as Map;
-
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the HomePage object that was created by
@@ -77,7 +75,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Hi ${arg['username']}',
+              'Hi ${widget.user['username']}!',
             ),
             const Text(
               'You have pushed the button this many times:',
