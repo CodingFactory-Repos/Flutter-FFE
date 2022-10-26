@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'login.dart';
+import 'register.dart';
 import 'mongodb.dart';
 
 Future<void> main() async {
@@ -19,6 +20,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       routes: {
         '/home': (context) => const HomePage(title: 'UwU'),
+        '/login': (context) => const LoginPage(title: 'Se connecter'),
+        '/register': (context) => const RegisterPage(title: 'S\'inscrire'),
       },
       theme: ThemeData(
         // This is the theme of your application.

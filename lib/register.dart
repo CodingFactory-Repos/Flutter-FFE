@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.title});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -16,13 +16,15 @@ class LoginPage extends StatefulWidget {
   final String title;
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   // -- Variables --
+  TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController profilePictureController = TextEditingController();
 
   // -- Methods --
 
@@ -37,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the LoginPage object that was created by
+        // Here we take the value from the RegisterPage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
@@ -67,15 +69,25 @@ class _LoginPageState extends State<LoginPage> {
               Container(
                 padding: const EdgeInsets.only(top: 20, bottom: 20),
                 child: const Text(
-                  'Se connecter',
+                  'Créer un compte',
                   style: TextStyle(
-                    fontSize: 40,
+                    fontSize: 35,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
 
-              // TextField for email with emailController
+              Container(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: TextField(
+                  controller: usernameController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Nom d\'utilisateur',
+                  ),
+                ),
+              ),
+
               Container(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: TextField(
@@ -87,12 +99,10 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              // TextField for password with passwordController
               Container(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: TextField(
                   controller: passwordController,
-                  obscureText: true,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Mot de passe',
@@ -103,15 +113,15 @@ class _LoginPageState extends State<LoginPage> {
               // Button to login
               ElevatedButton(
                 onPressed: () {},
-                child: const Text('Se connecter'),
+                child: const Text('Créer un compte'),
               ),
 
-              // Text to register
+              // Text to login
               TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/register');
+                  Navigator.pushNamed(context, '/login');
                 },
-                child: const Text('Pas de compte ? S\'inscrire'),
+                child: const Text('Se connecter'),
               )
             ],
           ),
