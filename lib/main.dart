@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'home.dart';
-import 'login/login.dart';
-import 'login/mdtp_oublie.dart';
-import 'login/register.dart';
+import 'account/login.dart';
+import 'account/mdtp_oublie.dart';
+import 'account/register.dart';
 import 'mongodb.dart';
 
 Future<void> main() async {
