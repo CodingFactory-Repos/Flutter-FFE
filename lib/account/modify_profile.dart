@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'mongodb.dart';
+import '../mongodb.dart';
 
 class ModifyProfilePage extends StatefulWidget {
   const ModifyProfilePage({super.key, required this.db, required this.user, required this.title});

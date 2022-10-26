@@ -4,7 +4,7 @@ import 'home.dart';
 import 'account/login.dart';
 import 'account/mdtp_oublie.dart';
 import 'account/register.dart';
-import 'modify_profile.dart';
+import 'account/modify_profile.dart';
 import 'mongodb.dart';
 
 Future<void> main() async {
