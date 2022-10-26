@@ -6,12 +6,15 @@ import 'mongodb.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MongoDatabase.connect();
-  runApp(const MyApp());
+  var db = await MongoDatabase.connect();
+
+  runApp(MyApp(db: db));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.db});
+
+  final dynamic db;
 
   // This widget is the root of your application.
   @override
@@ -19,9 +22,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       routes: {
-        '/home': (context) => const HomePage(title: 'UwU'),
-        '/login': (context) => const LoginPage(title: 'Se connecter'),
-        '/register': (context) => const RegisterPage(title: 'S\'inscrire'),
+        '/home': (context) => HomePage(db: db, title: 'UwU', ),
+        '/login': (context) => LoginPage(db: db, title: 'Se connecter'),
+        '/register': (context) => RegisterPage(db: db, title: 'S\'inscrire'),
       },
       theme: ThemeData(
         // This is the theme of your application.
@@ -35,7 +38,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.orange,
       ),
-      home: const LoginPage(title: 'Salut'),
+      home: LoginPage(db: db, title: 'Salut'),
     );
   }
 }

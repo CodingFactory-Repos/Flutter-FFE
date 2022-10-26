@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key, required this.title});
+  const RegisterPage({super.key, required this.db, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -14,6 +14,7 @@ class RegisterPage extends StatefulWidget {
   // always marked "final".
 
   final String title;
+  final db;
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -24,7 +25,6 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController profilePictureController = TextEditingController();
 
   // -- Methods --
 
@@ -112,14 +112,24 @@ class _RegisterPageState extends State<RegisterPage> {
 
               // Button to login
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  // Add the user to the database
+                  await widget.db.collection('user').insertOne({
+                    'username': usernameController.text,
+                    'email': emailController.text,
+                    'password': passwordController.text,
+                  });
+
+                  // Go to the login page
+                  Navigator.pop(context);
+                },
                 child: const Text('Créer un compte'),
               ),
 
               // Text to login
               TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/login');
+                  Navigator.pop(context);
                 },
                 child: const Text('Se connecter'),
               )

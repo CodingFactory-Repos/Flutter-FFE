@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.title});
+  const LoginPage({super.key, required this.db, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -14,6 +14,7 @@ class LoginPage extends StatefulWidget {
   // always marked "final".
 
   final String title;
+  final db;
 
   @override
   State<LoginPage> createState() => _LoginPageState();

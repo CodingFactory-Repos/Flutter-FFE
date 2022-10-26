@@ -13,7 +13,6 @@ class MongoDatabase {
     await db.open();
     inspect(db);
 
-    var status = db.serverStatus();
-    print(status);
+    return db;
   }
 }
