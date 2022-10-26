@@ -154,13 +154,11 @@ class _LoginPageState extends State<LoginPage> {
                     return;
                   }
 
-                  print(emailQuery[0]);
-
                   // Close the loading dialog
                   Navigator.of(context).pop();
 
-                  // Go to the login page
-                  Navigator.pop(context);
+                  // Send emailQuery[0] to the home.dart
+                  Navigator.pushNamed(context, '/home', arguments: emailQuery[0]);
                 },
                 child: const Text('Se connecter'),
               ),

@@ -13,9 +13,10 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.db});
+  const MyApp({super.key, required this.db, this.user});
 
   final dynamic db;
+  final user;
 
   // This widget is the root of your application.
   @override
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       routes: {
-        '/home': (context) => HomePage(db: db, title: 'UwU', ),
+        '/home': (context) => HomePage(db: db, user: user, title: 'UwU', ),
         '/login': (context) => LoginPage(db: db, title: 'Se connecter'),
         '/register': (context) => RegisterPage(db: db, title: 'S\'inscrire'),
         '/mdtp_oublie': (context) => mdtpPage(db: db, title: 'Mot de passe oublier'),
@@ -40,7 +41,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.orange,
       ),
-      home: LoginPage(db: db, title: 'Connexion'),
+      home: LoginPage(db: db, title: 'Se connecter'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

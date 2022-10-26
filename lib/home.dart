@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.db, required this.title});
+  const HomePage({super.key, required this.db, required this.user, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 
   final String title;
   final db;
+  final user;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -22,6 +23,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _counter = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -42,6 +48,8 @@ class _HomePageState extends State<HomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    final Map arg = ModalRoute.of(context)!.settings.arguments as Map;
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the HomePage object that was created by
@@ -68,6 +76,9 @@ class _HomePageState extends State<HomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text(
+              'Hi ${arg['username']}',
+            ),
             const Text(
               'You have pushed the button this many times:',
             ),
