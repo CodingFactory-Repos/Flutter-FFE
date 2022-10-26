@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'home.dart';
 import 'login.dart';
 import 'mdtp_oublie.dart';
+import 'modify_profile.dart';
 import 'register.dart';
 import 'mongodb.dart';
 
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginPage(db: db, title: 'Se connecter'),
         '/register': (context) => RegisterPage(db: db, title: 'S\'inscrire'),
         '/mdtp_oublie': (context) => mdtpPage(db: db, title: 'Mot de passe oublier'),
+        '/modify_profile': (context) => ModifyProfilePage(db: db, user: user, title: 'Modifier le profil'),
       },
       theme: ThemeData(
         // This is the theme of your application.

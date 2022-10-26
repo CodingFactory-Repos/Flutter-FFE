@@ -52,6 +52,15 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         // Here we take the value from the HomePage object that was created by
         // the App.build method, and use it to set our appbar title.
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              // _navigateAndDisplaySelection(context);
+              Navigator.pushNamed(context, '/modify_profile');
+            },
+          ),
+        ],
         title: Text(widget.title),
       ),
       body: Center(
