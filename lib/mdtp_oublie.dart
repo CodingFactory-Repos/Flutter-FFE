@@ -80,7 +80,9 @@ class _mdtpPageState extends State<mdtpPage> {
 
               // Button to login
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 child: const Text('Envoyer'),
               ),
 
