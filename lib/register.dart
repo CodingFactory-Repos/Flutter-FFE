@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'mongodb.dart';
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key, required this.db, required this.title});
 
@@ -113,12 +115,59 @@ class _RegisterPageState extends State<RegisterPage> {
               // Button to login
               ElevatedButton(
                 onPressed: () async {
+                  // Create loading dialog
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  );
+
+                  // Check if the username and email is already taken
+                  var username = usernameController.text;
+                  var email = emailController.text;
+                  var password = passwordController.text;
+
+                  // Check the email with regex
+                  if (!RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email)) {
+                    // Close the loading dialog
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('L\'adresse email n\'est pas valide')));
+                    return;
+                  }
+
+                  var usernameQuery = await widget.db.collection('user').find(MongoDatabase.searchWhere('username', username)).toList();
+                  var emailQuery = await widget.db.collection('user').find(MongoDatabase.searchWhere('email', email)).toList();
+
+                  if (usernameQuery.length > 0) {
+                    // Username already taken
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Ce nom d\'utilisateur est déjà pris')));
+                    return;
+                  }
+
+                  if (emailQuery.length > 0) {
+                    // Email already taken
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Cette adresse email est déjà prise')));
+                    return;
+                  }
+
                   // Add the user to the database
                   await widget.db.collection('user').insertOne(<String, dynamic>{
-                    'username': usernameController.text,
-                    'email': emailController.text,
-                    'password': passwordController.text
+                    'username': username,
+                    'email': email,
+                    'password': password,
                   });
+
+                  // Close the loading dialog
+                  Navigator.of(context).pop();
 
                   // Go to the login page
                   Navigator.pop(context);

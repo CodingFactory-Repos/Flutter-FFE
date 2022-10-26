@@ -15,4 +15,8 @@ class MongoDatabase {
 
     return db;
   }
+
+  static searchWhere(column, value) {
+    return where.eq(column, value);
+  }
 }
