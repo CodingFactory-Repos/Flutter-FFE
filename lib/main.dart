@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'login.dart';
+import 'mdtp_oublie.dart';
 import 'register.dart';
 import 'mongodb.dart';
 
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(db: db, title: 'UwU', ),
         '/login': (context) => LoginPage(db: db, title: 'Se connecter'),
         '/register': (context) => RegisterPage(db: db, title: 'S\'inscrire'),
+        '/mdtp_oublie': (context) => mdtpPage(db: db, title: 'Mot de passe oublier'),
       },
       theme: ThemeData(
         // This is the theme of your application.
@@ -38,7 +40,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.orange,
       ),
-      home: LoginPage(db: db, title: 'Salut'),
+      home: LoginPage(db: db, title: 'Connexion'),
     );
   }
 }
