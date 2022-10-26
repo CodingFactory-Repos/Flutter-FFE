@@ -116,6 +116,12 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.pushNamed(context, '/register');
                 },
                 child: const Text('Pas de compte ? S\'inscrire'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/mdtp_oublie');
+                },
+                child: const Text('Mot de passe oublier ?'),
               )
             ],
           ),
