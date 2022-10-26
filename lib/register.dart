@@ -114,10 +114,10 @@ class _RegisterPageState extends State<RegisterPage> {
               ElevatedButton(
                 onPressed: () async {
                   // Add the user to the database
-                  await widget.db.collection('user').insertOne({
+                  await widget.db.collection('user').insertOne(<String, dynamic>{
                     'username': usernameController.text,
                     'email': emailController.text,
-                    'password': passwordController.text,
+                    'password': passwordController.text
                   });
 
                   // Go to the login page
