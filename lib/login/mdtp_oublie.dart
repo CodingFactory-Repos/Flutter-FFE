@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'mongodb.dart';
+import '../mongodb.dart';
 
 class mdtpPage extends StatefulWidget {
   const mdtpPage({super.key, required this.db, required this.title});

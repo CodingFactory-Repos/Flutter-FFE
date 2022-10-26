@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'mongodb.dart';
+import '../mongodb.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.db, required this.title});
@@ -28,6 +28,64 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
 
   // -- Methods --
+  /// > The function creates a loading dialog, checks if the email and password are
+  /// correct, and if they are, it sends the user to the home page
+  ///
+  /// Returns:
+  ///   The user's information
+  connectToAccount() async {
+    // Create loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    // Check if the username and email is already taken
+    var email = emailController.text;
+    var password = passwordController.text;
+
+    // Check if all fields are not empty
+    if (email.isEmpty || password.isEmpty) {
+      // Close loading dialog
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Veuillez remplir tous les champs')));
+      return;
+    }
+
+    var emailQuery = await widget.db
+        .collection('user')
+        .find(MongoDatabase.searchWhere('email', email))
+        .toList();
+
+    if (emailQuery.length == 0) {
+      // Email already taken
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('L\'utilisateur n\'existe pas')));
+      return;
+    }
+
+    // Check if the password is correct
+    if (emailQuery[0]['password'] != password) {
+      // Password is incorrect
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Le mot de passe est incorrect')));
+      return;
+    }
+
+    // Close the loading dialog
+    Navigator.of(context).pop();
+
+    // Send emailQuery[0] to the home.dart
+    Navigator.pushNamed(context, '/main', arguments: emailQuery[0]);
+  }
 
   // -- Widgets --
   @override
@@ -109,56 +167,8 @@ class _LoginPageState extends State<LoginPage> {
 
               // Button to login
               ElevatedButton(
-                onPressed: () async {
-                  // Create loading dialog
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (BuildContext context) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-
-                      );
-                    },
-                  );
-
-                  // Check if the username and email is already taken
-                  var email = emailController.text;
-                  var password = passwordController.text;
-
-                  // Check if all fields are not empty
-                  if (email.isEmpty || password.isEmpty) {
-                    // Close loading dialog
-                    Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Veuillez remplir tous les champs')));
-                    return;
-                  }
-
-                  var emailQuery = await widget.db.collection('user').find(MongoDatabase.searchWhere('email', email)).toList();
-
-                  if (emailQuery.length == 0) {
-                    // Email already taken
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('L\'utilisateur n\'existe pas')));
-                    return;
-                  }
-
-                  // Check if the password is correct
-                  if (emailQuery[0]['password'] != password) {
-                    // Password is incorrect
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Le mot de passe est incorrect')));
-                    return;
-                  }
-
-                  // Close the loading dialog
-                  Navigator.of(context).pop();
-
-                  // Send emailQuery[0] to the home.dart
-                  Navigator.pushNamed(context, '/main', arguments: emailQuery[0]);
+                onPressed: () {
+                  connectToAccount();
                 },
                 child: const Text('Se connecter'),
               ),
