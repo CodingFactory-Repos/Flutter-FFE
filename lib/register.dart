@@ -131,6 +131,15 @@ class _RegisterPageState extends State<RegisterPage> {
                   var email = emailController.text;
                   var password = passwordController.text;
 
+                  // Check if all fields are not empty
+                  if (username.isEmpty || email.isEmpty || password.isEmpty) {
+                    // Close loading dialog
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Veuillez remplir tous les champs')));
+                    return;
+                  }
+
                   // Check the email with regex
                   if (!RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email)) {
                     // Close the loading dialog

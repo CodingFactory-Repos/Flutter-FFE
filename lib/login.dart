@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'mongodb.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.db, required this.title});
 
@@ -92,6 +94,7 @@ class _LoginPageState extends State<LoginPage> {
               Container(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: TextField(
+                  controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                       border: const OutlineInputBorder(),
@@ -106,7 +109,59 @@ class _LoginPageState extends State<LoginPage> {
 
               // Button to login
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  // Create loading dialog
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+
+                      );
+                    },
+                  );
+
+                  // Check if the username and email is already taken
+                  var email = emailController.text;
+                  var password = passwordController.text;
+
+                  // Check if all fields are not empty
+                  if (email.isEmpty || password.isEmpty) {
+                    // Close loading dialog
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Veuillez remplir tous les champs')));
+                    return;
+                  }
+
+                  var emailQuery = await widget.db.collection('user').find(MongoDatabase.searchWhere('email', email)).toList();
+
+                  if (emailQuery.length == 0) {
+                    // Email already taken
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('L\'utilisateur n\'existe pas')));
+                    return;
+                  }
+
+                  // Check if the password is correct
+                  if (emailQuery[0]['password'] != password) {
+                    // Password is incorrect
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Le mot de passe est incorrect')));
+                    return;
+                  }
+
+                  print(emailQuery[0]);
+
+                  // Close the loading dialog
+                  Navigator.of(context).pop();
+
+                  // Go to the login page
+                  Navigator.pop(context);
+                },
                 child: const Text('Se connecter'),
               ),
 
