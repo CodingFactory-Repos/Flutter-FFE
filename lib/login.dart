@@ -92,14 +92,17 @@ class _LoginPageState extends State<LoginPage> {
               Container(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: TextField(
-                  controller: passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Mot de passe',
-                  ),
+                  decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      hintText: 'mot de passe',
+                      suffix: InkWell(
+                      child: const Icon(Icons.visibility, color: Colors.grey, size: 20),
+                  onTap: (){},
+                 ),
                 ),
               ),
+            ),
 
               // Button to login
               ElevatedButton(
