@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'home.dart';
 import 'login.dart';
 import 'mdtp_oublie.dart';
@@ -8,6 +9,7 @@ import 'mongodb.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var db = await MongoDatabase.connect();
+  await dotenv.load(fileName: ".env");
 
   runApp(MyApp(db: db));
 }
@@ -21,7 +23,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final Map? user = ModalRoute.of(context)?.settings.arguments as Map?;
+    Map? user = ModalRoute.of(context)?.settings.arguments as Map?;
+    bool DEV_MODE = dotenv.env['DEV_MODE'] == 'true';
 
     return MaterialApp(
       title: 'Flutter Demo',
@@ -44,7 +47,12 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.orange,
       ),
-      home: user == null ? LoginPage(db: db, title: 'Se connecter') : HomePage(db: db, user: user, title: 'UwU', ),
+      home: user == null && !(DEV_MODE) ? LoginPage(db: db, title: 'Se connecter') : HomePage(db: db, user: DEV_MODE ? {
+        "_id": "60f1b1f1b1f1b1f1b1f1b1f1",
+        "username": "username",
+        "email": "developer@email.com",
+        "password": "password",
+      } : user, title: 'UwU'),
       debugShowCheckedModeBanner: false,
     );
   }
