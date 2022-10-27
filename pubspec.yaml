@@ -66,6 +66,7 @@ flutter:
     - .env
     - assets/logo.png
     - assets/images/juan.png
+    - assets/images/competition-banner.jpg
     - assets/images/profile.png
     - assets/images/user.png
     - assets/images/horse0.png
