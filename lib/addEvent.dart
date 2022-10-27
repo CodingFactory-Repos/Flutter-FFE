@@ -73,7 +73,7 @@ class _AddEventPageState extends State<AddEventPage> {
       'type': 'competition',
       'title': name,
       'description': description,
-      'date': date,
+      'date': date.add(Duration(hours: DateTime.now().timeZoneOffset.inHours)),
       'location': location,
       'plot': plot,
       'time': time,

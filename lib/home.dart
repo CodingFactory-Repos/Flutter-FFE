@@ -24,46 +24,45 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // -- Variables --
   var feed = [];
-  var feedAndUsers = [];
+  var lastUser = [];
 
   @override
   void initState() {
     super.initState();
     getFeed();
-    getFeedAndUsers();
+    getLastUser();
   }
 
   // -- Methods --
   void getFeed() async {
     var feed = await widget.db.collection('feed').find().toList();
 
+    // Sort the feed by date
+    for (var i = 0; i < feed.length; i++) {
+      for (var j = 0; j < feed.length - 1; j++) {
+        if (feed[j]['date'].isBefore(feed[j + 1]['date'])) {
+          var temp = feed[j];
+          feed[j] = feed[j + 1];
+          feed[j + 1] = temp;
+        }
+      }
+    }
+
     setState(() {
-      this.feed = feed;
+      this.feed = feed.reversed.toList();
     });
   }
 
-  void getFeedAndUsers() async {
+  void getLastUser() async {
     var users = await widget.db.collection('user').find().toList();
-    var feedAndUsers = [];
 
-    for (var i = 0; i < feed.length; i++) {
-      feedAndUsers.add(feed[i]);
-    }
+    // Remove the current user
+    users.removeWhere((element) => element['username'] == widget.user['username']);
 
-    for (var i = 0; i < users.length; i++) {
-      // Convert acountCreatedAt to date
-      users[i]['date'] = users[i]['accountCreatedAt'];
-      users[i].remove('accountCreatedAt');
-
-      // Add user to feedAndUsers
-      feedAndUsers.add(users[i]);
-    }
-
-    // Sort feedAndUsers by date
-    feedAndUsers.sort((a, b) => a['date'].compareTo(b['date']));
+    var lastUser = users.sublist(users.length - 1, users.length);
 
     setState(() {
-      this.feedAndUsers = feedAndUsers;
+      this.lastUser = lastUser;
     });
   }
 
@@ -190,6 +189,20 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
 
+                        Card(
+                          child: ListTile(
+                            leading: const Icon(Icons.person,
+                                size: 50),
+                            title: Text("${lastUser[0]['username']}",
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                            subtitle: Text(
+                                "Nous a rejoins le ${lastUser[0]['accountCreatedAt'].toString().substring(0, 10).replaceAll("-", "/")}"),
+                          ),
+                        ),
+
                         Container(
                           // Create text en align left
                           alignment: Alignment.centerLeft,
@@ -205,41 +218,27 @@ class _HomePageState extends State<HomePage> {
                         ),
 
                         // In container, create a border rounded card with a image, title and a subtitle
-                        for (var item in feedAndUsers)
+                        for (var item in feed)
                           // If the date is depassed, don't show the item
                           if (item['date'].isAfter(
                               DateTime.now().add(const Duration(hours: -12))))
                             SizedBox(
                                 width: 300.0,
                                 // If the item is have username, it's a user and create card with user icon on left and user username as title on right
-                                child: item['username'] != null
-                                    ? Card(
-                                        child: ListTile(
-                                          leading: const Icon(Icons.person,
-                                              size: 50),
-                                          title: Text("${item['username']}",
-                                              style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                              )),
-                                          subtitle: Text(
-                                              "Nous a rejoins le ${item['date'].toString().substring(0, 10).replaceAll("-", "/")}"),
-                                        ),
-                                      )
-                                    : Card(
-                                        // If the item is have title, it's a competition and create card with competition icon on left and competition title as title on right
-                                        child: ListTile(
-                                          leading:
-                                              const Icon(Icons.flag, size: 50),
-                                          title: Text("${item['title']}",
-                                              style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                              )),
-                                          subtitle: Text(
-                                              "A lieu le ${item['date'].toString().substring(0, 10).replaceAll("-", "/")}"),
-                                        ),
-                                      )),
+                                child: Card(
+                                  // If the item is have title, it's a competition and create card with competition icon on left and competition title as title on right
+                                  child: ListTile(
+                                    leading:
+                                        const Icon(Icons.flag, size: 50),
+                                    title: Text("${item['title']}",
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                    subtitle: Text(
+                                        "A lieu le ${item['date'].toString().substring(0, 10).replaceAll("-", "/")}"),
+                                  ),
+                                )),
                       ],
               )
               )
