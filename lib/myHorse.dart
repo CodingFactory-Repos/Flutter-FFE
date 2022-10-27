@@ -135,8 +135,8 @@ class _MyHorsePageState extends State<MyHorsePage> {
                                 topLeft: Radius.circular(15.0),
                                 topRight: Radius.circular(15.0),
                               ),
-                              child: Image.asset(
-                                  'assets/images/competition-banner.jpg'),
+                              child: Image.network(
+                                  'https://www.classequine.com/wp-content/uploads/2021/${item['picture']}'),
                             ),
                             ListTile(
                               title: Text("${item['name']}"),
