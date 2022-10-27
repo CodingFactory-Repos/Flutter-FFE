@@ -27,11 +27,21 @@ class MyHorsePage extends StatefulWidget {
 class _MyHorsePageState extends State<MyHorsePage> {
   // -- Variables --
   var dpHorse = [];
+  var ownerHorse = [];
+  var myHorse = {
+    "dp": [],
+    "owned": [],
+  };
+  var allHorse = [];
+  var unownedHorse = [];
 
   @override
   void initState() {
     super.initState();
     getDpHorse();
+    getOwnerHorse();
+    getAllHorse();
+    getUnownedHorse();
   }
 
   // -- Methods --
@@ -50,6 +60,53 @@ class _MyHorsePageState extends State<MyHorsePage> {
 
     setState(() {
       this.dpHorse = dpHorse;
+      myHorse['dp']?.addAll(dpHorse);
+    });
+    // print(myHorse['dp']);
+  }
+
+  void getOwnerHorse() async {
+    var ownerHorse = [];
+
+    if(widget.user['ownerHorse'] != null) {
+      for (var i = 0; i < widget.user['ownerHorse'].length; i++) {
+        var horse = await widget.db.collection('horse').findOne({
+          '_id': widget.user['ownerHorse'][i],
+        });
+
+        ownerHorse.add(horse);
+      }
+    }
+
+    setState(() {
+      this.ownerHorse = ownerHorse;
+      myHorse['owned']?.addAll(ownerHorse);
+    });
+    // print(myHorse['owned']);
+  }
+
+
+  void getAllHorse() async {
+    var allHorse = await widget.db.collection('horse').find().toList();
+
+    // print(allHorse);
+    setState(() {
+      this.allHorse = allHorse;
+    });
+  }
+
+  // get horses that user don't own
+  Future<void> getUnownedHorse() async {
+    var unownedHorse = [];
+    await widget.db.collection('horse').find().forEach((horse) {
+      if (widget.user['ownerHorse'].contains(horse['_id']) == false && widget.user['dpHorse'].contains(horse['_id']) == false) {
+        unownedHorse.add(horse);
+      }
+    });
+
+    // print(unownedHorse);
+    setState(() {
+      this.unownedHorse = unownedHorse;
     });
   }
 
@@ -86,18 +143,6 @@ class _MyHorsePageState extends State<MyHorsePage> {
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
           children: <Widget>[
-            Container(
-              // Create text en align left
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
-              child: const Text(
-                'Modifier mes chevaux',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
             Expanded(
                 child: SizedBox(
               height: MediaQuery.of(context).size.height,
@@ -105,6 +150,19 @@ class _MyHorsePageState extends State<MyHorsePage> {
                 // This next line does the trick.
                 scrollDirection: Axis.vertical,
                 children: <Widget>[
+                  Container(
+                    // Create text en align left
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
+                    child: const Text(
+                      'Modifier mes chevaux',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
                   if (dpHorse.isEmpty)
                     // On middle of the screen a text
                     Container(
@@ -120,7 +178,63 @@ class _MyHorsePageState extends State<MyHorsePage> {
                       ),
                     ),
                   // In container, create a border rounded card with a image, title and a subtitle
-                  for (var item in dpHorse)
+                  for (var item in myHorse['owned']!)
+                    SizedBox(
+                      width: 300.0,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: Wrap(
+                          children: <Widget>[
+                            // Add image with border
+                            ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(15.0),
+                                topRight: Radius.circular(15.0),
+                              ),
+                              child: Image.network(
+                                  'https://www.classequine.com/wp-content/uploads/2021/${item['picture']}'),
+                            ),
+                            ListTile(
+                              title: Text("${item['name']} (owner)"),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text("${item['race']}"),
+                                  Container(
+                                    padding: const EdgeInsets.only(
+                                        top: 5, bottom: 5),
+                                    child: Row(
+                                      children: <Widget>[
+                                        const Icon(
+                                          Icons.cake,
+                                          size: 15,
+                                        ),
+                                        Text(" ${item['age']} - "),
+                                        if(item['sexe'] == 'female')
+                                          const Icon(
+                                            Icons.female,
+                                            size: 15,
+                                          ),
+                                        if(item['sexe'] == 'male')
+                                          const Icon(
+                                            Icons.male,
+                                            size: 15,
+                                          ),
+                                        Text(" ${item['sexe']}"),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                  for (var item in myHorse['dp']!)
                     SizedBox(
                       width: 300.0,
                       child: Card(
@@ -140,32 +254,104 @@ class _MyHorsePageState extends State<MyHorsePage> {
                             ),
                             ListTile(
                               title: Text("${item['name']}"),
-                              subtitle: Container(
-                                // Add the item description and the item location
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text("${item['description']}"),
-                                    Container(
-                                      padding: const EdgeInsets.only(
-                                          top: 5, bottom: 5),
-                                      child: Row(
-                                        children: <Widget>[
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text("${item['race']}"),
+                                  Container(
+                                    padding: const EdgeInsets.only(
+                                        top: 5, bottom: 5),
+                                    child: Row(
+                                      children: <Widget>[
+                                        const Icon(
+                                          Icons.cake,
+                                          size: 15,
+                                        ),
+                                        Text(" ${item['age']} - "),
+                                        if(item['sexe'] == 'female')
                                           const Icon(
-                                            Icons.location_on,
+                                            Icons.female,
                                             size: 15,
                                           ),
-                                          Text("${item['name']} - "),
+                                        if(item['sexe'] == 'male')
                                           const Icon(
-                                            Icons.calendar_today,
+                                            Icons.male,
                                             size: 15,
                                           ),
-                                          Text("Text"),
-                                        ],
-                                      ),
+                                        Text(" ${item['sexe']}")
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                  Container(
+                    // Create text en align left
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
+                    child: const Text(
+                      'Chevaux disponibles',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  for (var item in unownedHorse)
+                    SizedBox(
+                      width: 300.0,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: Wrap(
+                          children: <Widget>[
+                            // Add image with border
+                            ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(15.0),
+                                topRight: Radius.circular(15.0),
+                              ),
+                              child: Image.network(
+                                  'https://www.classequine.com/wp-content/uploads/2021/${item['picture']}'),
+                            ),
+                            ListTile(
+                              title: Text("${item['name']}"),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text("${item['race']}"),
+                                  Container(
+                                    padding: const EdgeInsets.only(
+                                        top: 5, bottom: 5),
+                                    child: Row(
+                                      children: <Widget>[
+                                        const Icon(
+                                          Icons.cake,
+                                          size: 15,
+                                        ),
+                                        Text(" ${item['age']} - "),
+                                        if(item['sexe'] == 'female')
+                                          const Icon(
+                                            Icons.female,
+                                            size: 15,
+                                          ),
+                                        if(item['sexe'] == 'male')
+                                          const Icon(
+                                            Icons.male,
+                                            size: 15,
+                                          ),
+                                        Text(" ${item['sexe']}")
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -173,8 +359,9 @@ class _MyHorsePageState extends State<MyHorsePage> {
                       ),
                     ),
                 ],
-              ),
-            ))
+                ),
+              )
+            ),
           ],
         ),
       ),
