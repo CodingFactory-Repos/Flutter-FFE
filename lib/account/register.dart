@@ -114,7 +114,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'email': email,
         'password': password,
         'image': images,
-        'dbHorse': [],
+        'dpHorse': [],
         'ownerHorse': [],
       });
 
