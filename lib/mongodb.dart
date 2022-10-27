@@ -13,6 +13,13 @@ class MongoDatabase {
     await db.open();
     inspect(db);
 
+    var status = db.serverStatus();
+    print(status);
+
     return db;
+  }
+
+  static searchWhere(column, value) {
+    return where.eq(column, value);
   }
 }
