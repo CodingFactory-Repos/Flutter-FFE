@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'addEvent.dart';
 import 'addHorse.dart';
 import 'home.dart';
 import 'account/login.dart';
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
         '/mdtp_oublie': (context) => mdtpPage(db: db, title: 'Mot de passe oublier'),
         '/modify_profile': (context) => ModifyProfilePage(db: db, user: user, title: 'Modifier le profil'),
         '/chose_image': (context) => ChoseImage(db: db, title: 'Choisir une image'),
-
+        '/addEvent': (context) => AddEventPage(db: db, user: user, title: 'Ajouter un événement',),
         '/myHorse': (context) => MyHorsePage(db: db, user: user, title: 'Mes chevaux'),
         '/addHorse': (context) => AddHorsePage(db: db, user: user, title: 'Ajouter un cheval'),
       },
