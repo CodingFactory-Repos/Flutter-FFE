@@ -151,11 +151,11 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                         var age = ageController.text;
                         var linkFfe = linkFfeController.text;
 
-                        // await widget.db
-                        //     .collection('user')
-                        //     .updateOne(MongoDatabase.searchWhere('_id', widget.user["_id"]), {
-                        //   '\$set': {'phoneNumber': int.parse(phoneNumber), 'age': int.parse(age), 'linkFfe': linkFfe}
-                        // });
+                        await widget.db
+                            .collection('user')
+                            .updateOne(MongoDatabase.searchWhere('_id', widget.user["_id"]), {
+                          '\$set': {'phoneNumber': int.parse(phoneNumber), 'age': int.parse(age), 'linkFfe': linkFfe}
+                        });
 
                         // Close the loading dialog
                         // Navigator.of(context).pop();
