@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'addLessons.dart';
 import 'home.dart';
 import 'account/login.dart';
 import 'account/mdtp_oublie.dart';
@@ -30,10 +31,17 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       routes: {
         '/main': (context) => MyApp(db: db),
-        '/home': (context) => HomePage(db: db, user: user, title: 'UwU', ),
+        '/home': (context) => HomePage(
+              db: db,
+              user: user,
+              title: 'UwU',
+            ),
         '/login': (context) => LoginPage(db: db, title: 'Se connecter'),
         '/register': (context) => RegisterPage(db: db, title: 'S\'inscrire'),
-        '/mdtp_oublie': (context) => mdtpPage(db: db, title: 'Mot de passe oublier'),
+        '/mdtp_oublie': (context) =>
+            mdtpPage(db: db, title: 'Mot de passe oublier'),
+        '/addLessons': (context) =>
+            addLessonsPage(db: db, title: 'Ajouter un cours')
       },
       theme: ThemeData(
         // This is the theme of your application.
@@ -47,14 +55,20 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.orange,
       ),
-      home: user == null && !(DEV_MODE) ? LoginPage(db: db, title: 'Se connecter') : HomePage(db: db, user: DEV_MODE ? {
-        "_id": "60f1b1f1b1f1b1f1b1f1b1f1",
-        "username": "username",
-        "email": "developer@email.com",
-        "password": "password",
-      } : user, title: 'UwU'),
+      home: user == null && !(DEV_MODE)
+          ? LoginPage(db: db, title: 'Se connecter')
+          : HomePage(
+              db: db,
+              user: DEV_MODE
+                  ? {
+                      "_id": "60f1b1f1b1f1b1f1b1f1b1f1",
+                      "username": "username",
+                      "email": "developer@email.com",
+                      "password": "password",
+                    }
+                  : user,
+              title: 'UwU'),
       debugShowCheckedModeBanner: false,
     );
   }
 }
-

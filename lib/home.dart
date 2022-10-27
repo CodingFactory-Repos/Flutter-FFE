@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.db, required this.user, required this.title});
+  const HomePage(
+      {super.key, required this.db, required this.user, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -85,101 +86,107 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-
-
             Expanded(
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: ListView(
-                // This next line does the trick.
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 20.0),
-                    height: 250.0,
+                child: SizedBox(
+                    height: MediaQuery.of(context).size.height,
                     child: ListView(
                       // This next line does the trick.
-                      scrollDirection: Axis.horizontal,
                       children: <Widget>[
-                        // In container, create a border rounded card with a image, title and a subtitle
-                        for (var item in feed)
-                          if (item['type'] == "competition")
-                            SizedBox(
-                              width: 300.0,
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Wrap(
-                                  children: <Widget>[
-                                    // Add image with border
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(15.0),
-                                        topRight: Radius.circular(15.0),
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 20.0),
+                          height: 250.0,
+                          child: ListView(
+                            // This next line does the trick.
+                            scrollDirection: Axis.horizontal,
+                            children: <Widget>[
+                              // In container, create a border rounded card with a image, title and a subtitle
+                              for (var item in feed)
+                                if (item['type'] == "competition")
+                                  SizedBox(
+                                    width: 300.0,
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
                                       ),
-                                      child: Image.asset(
-                                          'assets/images/competition-banner.jpg'),
-                                    ),
-                                    ListTile(
-                                      title: Text("${item['title']}"),
-                                      subtitle: Container(
-                                        // Add the item description and the item location
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text("${item['description']}"),
-                                            Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 5, bottom: 5),
-                                              child: Row(
+                                      child: Wrap(
+                                        children: <Widget>[
+                                          // Add image with border
+                                          ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              topLeft: Radius.circular(15.0),
+                                              topRight: Radius.circular(15.0),
+                                            ),
+                                            child: Image.asset(
+                                                'assets/images/competition-banner.jpg'),
+                                          ),
+                                          ListTile(
+                                            title: Text("${item['title']}"),
+                                            subtitle: Container(
+                                              // Add the item description and the item location
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: <Widget>[
-                                                  const Icon(
-                                                    Icons.location_on,
-                                                    size: 15,
-                                                  ),
                                                   Text(
-                                                      "${item['location']} - "),
-                                                  const Icon(
-                                                    Icons.calendar_today,
-                                                    size: 15,
+                                                      "${item['description']}"),
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 5, bottom: 5),
+                                                    child: Row(
+                                                      children: <Widget>[
+                                                        const Icon(
+                                                          Icons.location_on,
+                                                          size: 15,
+                                                        ),
+                                                        Text(
+                                                            "${item['location']} - "),
+                                                        const Icon(
+                                                          Icons.calendar_today,
+                                                          size: 15,
+                                                        ),
+                                                        Text(item['date']
+                                                            .toString()
+                                                            .substring(0, 10)
+                                                            .replaceAll(
+                                                                "-", "/")),
+                                                      ],
+                                                    ),
                                                   ),
-                                                  Text(item['date']
-                                                      .toString()
-                                                      .substring(0, 10)
-                                                      .replaceAll("-", "/")),
                                                 ],
                                               ),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                            ],
+                          ),
+                        ),
+
+                        // In container, create a border rounded card with a image, title and a subtitle
+                        for (var item in feed)
+                          SizedBox(
+                            width: 300.0,
+                            child: Card(
+                              child: ListTile(
+                                leading: const FlutterLogo(size: 56.0),
+                                title: Text("${item["date"]}}"),
                               ),
                             ),
+                          ),
                       ],
-                    ),
-                  ),
-
-                  // In container, create a border rounded card with a image, title and a subtitle
-                  for (var item in feed)
-                    SizedBox(
-                      width: 300.0,
-                      child: Card(
-                        child: ListTile(
-                          leading: const FlutterLogo(size: 56.0),
-                          title: Text("${item["date"]}}"),
-                        ),
-                      ),
-                    ),
-                ],
-              )
-              )
-            )
+                    ))),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {Navigator.pushNamed(context, '/addLessons')},
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
       ),
     );
   }
