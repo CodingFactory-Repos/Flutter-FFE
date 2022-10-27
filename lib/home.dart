@@ -24,7 +24,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // -- Variables --
   var feed = [];
-  var lastUser = [];
+  var lastUser = [{}];
 
   @override
   void initState() {
@@ -37,15 +37,27 @@ class _HomePageState extends State<HomePage> {
   void getFeed() async {
     var feed = await widget.db.collection('feed').find().toList();
 
-    // Sort the feed by date
+    // Don't show the feed if the date has already passed
     for (var i = 0; i < feed.length; i++) {
-      for (var j = 0; j < feed.length - 1; j++) {
-        if (feed[j]['date'].isBefore(feed[j + 1]['date'])) {
-          var temp = feed[j];
-          feed[j] = feed[j + 1];
-          feed[j + 1] = temp;
+      if (feed[i]['date'].isBefore(DateTime.now())) {
+        feed.removeAt(i);
+      }
+    }
+
+    // Sort the feed by date (newest first)
+    for (var i = 0; i < feed.length; i++) {
+      for (var j = 0; j < feed.length; j++) {
+        if (feed[i]['date'].isAfter(feed[j]['date'])) {
+          var temp = feed[i];
+          feed[i] = feed[j];
+          feed[j] = temp;
         }
       }
+    }
+
+    // limit to 5 items
+    if (feed.length > 5) {
+      feed = feed.sublist(0, 5);
     }
 
     setState(() {
@@ -209,13 +221,13 @@ class _HomePageState extends State<HomePage> {
                           child: ListTile(
                             leading: const Icon(Icons.person,
                                 size: 50),
-                            title: Text("${lastUser[0]['username']}",
+                            title: Text("${lastUser[0]['username'] ?? "No user found"}",
                                 style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 )),
                             subtitle: Text(
-                                "Nous a rejoins le ${lastUser[0]['accountCreatedAt'].toString().substring(0, 10).replaceAll("-", "/")}"),
+                                "Nous a rejoins le ${lastUser[0]['accountCreatedAt'] != null ? lastUser[0]['accountCreatedAt'].toString().substring(0, 10).replaceAll("-", "/") : "No date found"}"),
                           ),
                         ),
 

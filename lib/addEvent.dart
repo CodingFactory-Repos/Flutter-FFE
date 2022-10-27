@@ -40,17 +40,6 @@ class _AddEventPageState extends State<AddEventPage> {
   /// Returns:
   ///   The user's information
   addEvent() async {
-    // Create loading dialog
-    // showDialog(
-    //   context: context,
-    //   barrierDismissible: false,
-    //   builder: (BuildContext context) {
-    //     return const Center(
-    //       child: CircularProgressIndicator(),
-    //     );
-    //   },
-    // );
-
     var name = nameController.text;
     var description = descriptionController.text;
     var date = DateTime.parse(pickedDateController.text);
@@ -82,7 +71,6 @@ class _AddEventPageState extends State<AddEventPage> {
     });
 
     // Close the loading dialog
-    // Navigator.of(context).pop();
 
     // Send emailQuery[0] to the home.dart
     Navigator.pushNamed(context, '/home');
@@ -125,6 +113,9 @@ class _AddEventPageState extends State<AddEventPage> {
           width: 300,
           child: Column(
             children: <Widget>[
+              // Type of plot (Événement, Soirée) in a dropdown menu
+              
+
               Container(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: TextField(
@@ -194,7 +185,7 @@ class _AddEventPageState extends State<AddEventPage> {
                   controller: timeController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Temps de l\'événement',
+                    labelText: 'Temps de l\'événement (en Minutes)',
                   ),
                 ),
               ),
