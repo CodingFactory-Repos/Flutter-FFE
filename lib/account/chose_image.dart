@@ -31,11 +31,11 @@ class ChoseImage extends StatefulWidget {
 class _ChoseImageState extends State<ChoseImage> {
 
   List<String> images = [
-    'assets/images/horse1.png' ,
+    'assets/images/horse0.png' ,
+    'assets/images/horse1.png',
     'assets/images/horse2.png',
-    'assets/images/horse3.png',
   ];
-  
+
   // -- Variables --
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -69,8 +69,7 @@ class _ChoseImageState extends State<ChoseImage> {
       return Center(
        child: InkWell(
           onTap: () {
-
-            Navigator.pop(context);
+            Navigator.pop(context, images[index]);
           }, // Handle your callback.
          child: Image.asset(images[index]),
          ),
