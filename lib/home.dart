@@ -78,6 +78,22 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         // Here we take the value from the HomePage object that was created by
         // the App.build method, and use it to set our appbar title.
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.bedroom_baby),
+            onPressed: () {
+              // _navigateAndDisplaySelection(context);
+              Navigator.pushNamed(context, '/myHorse');
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              // _navigateAndDisplaySelection(context);
+              Navigator.pushNamed(context, '/modify_profile');
+            },
+          ),
+        ],
         title: Text(widget.title),
       ),
       body: Center(
@@ -103,9 +119,9 @@ class _HomePageState extends State<HomePage> {
               // Create text en align left
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
-              child: Text(
-                'Welcome ${widget.user['username']}',
-                style: const TextStyle(
+              child: const Text(
+                'Évenements a venir',
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
