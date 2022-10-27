@@ -7,6 +7,7 @@ import 'account/register.dart';
 import 'account/modify_profile.dart';
 import 'package:flutter_ffe/myHorse.dart';
 import 'mongodb.dart';
+import 'account/chose_image.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/mdtp_oublie': (context) => mdtpPage(db: db, title: 'Mot de passe oublier'),
         '/modify_profile': (context) => ModifyProfilePage(db: db, user: user, title: 'Modifier le profil'),
         '/myHorse': (context) => MyHorsePage(db: db, user: user, title: 'Mes chevaux'),
+        '/chose_image': (context) => ChoseImage(db: db, title: 'Choisir une image'),
       },
       theme: ThemeData(
         // This is the theme of your application.

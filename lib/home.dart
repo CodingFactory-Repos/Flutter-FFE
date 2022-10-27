@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     getFeed();
+    getFeedAndUsers();
   }
 
   // -- Methods --
@@ -37,6 +38,31 @@ class _HomePageState extends State<HomePage> {
     var feed = await widget.db.collection('feed').find().toList();
     setState(() {
       this.feed = feed;
+    });
+  }
+
+  void getFeedAndUsers() async {
+    var users = await widget.db.collection('user').find().toList();
+    var feedAndUsers = [];
+
+    for (var i = 0; i < feed.length; i++) {
+      feedAndUsers.add(feed[i]);
+    }
+
+    for (var i = 0; i < users.length; i++) {
+      // Convert acountCreatedAt to date
+      users[i]['date'] = users[i]['accountCreatedAt'];
+      users[i].remove('accountCreatedAt');
+
+      // Add user to feedAndUsers
+      feedAndUsers.add(users[i]);
+    }
+
+    // Sort feedAndUsers by date
+    feedAndUsers.sort((a, b) => a['date'].compareTo(b['date']));
+
+    setState(() {
+      this.feedAndUsers = feedAndUsers;
     });
   }
 
@@ -169,28 +195,67 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ],
                                         ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                      ],
-                    ),
-                  ),
-
-                  // In container, create a border rounded card with a image, title and a subtitle
-                  for (var item in feed)
-                    SizedBox(
-                      width: 300.0,
-                      child: Card(
-                        child: ListTile(
-                          leading: const FlutterLogo(size: 56.0),
-                          title: Text("${item["date"]}}"),
+                                  ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
-                ],
+
+                        Container(
+                          // Create text en align left
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(
+                              top: 5, bottom: 5, left: 10),
+                          child: const Text(
+                            'Pour toi',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+
+                        // In container, create a border rounded card with a image, title and a subtitle
+                        for (var item in feedAndUsers)
+                          // If the date is depassed, don't show the item
+                          if (item['date'].isAfter(
+                              DateTime.now().add(const Duration(hours: -12))))
+                            SizedBox(
+                                width: 300.0,
+                                // If the item is have username, it's a user and create card with user icon on left and user username as title on right
+                                child: item['username'] != null
+                                    ? Card(
+                                        child: ListTile(
+                                          leading: const Icon(Icons.person,
+                                              size: 50),
+                                          title: Text("${item['username']}",
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                          subtitle: Text(
+                                              "Nous a rejoins le ${item['date'].toString().substring(0, 10).replaceAll("-", "/")}"),
+                                        ),
+                                      )
+                                    : Card(
+                                        // If the item is have title, it's a competition and create card with competition icon on left and competition title as title on right
+                                        child: ListTile(
+                                          leading:
+                                              const Icon(Icons.flag, size: 50),
+                                          title: Text("${item['title']}",
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                          subtitle: Text(
+                                              "A lieu le ${item['date'].toString().substring(0, 10).replaceAll("-", "/")}"),
+                                        ),
+                                      )),
+                      ],
               )
               )
             )
