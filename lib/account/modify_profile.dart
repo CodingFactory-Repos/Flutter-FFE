@@ -230,12 +230,15 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                           }
                         });
 
-                        // Close the loading dialog
-                        // Navigator.of(context).pop();
-                        // Navigator.of(context).pop();
+                        var newUser = await widget.db
+                            .collection('user')
+                            .find(MongoDatabase.searchWhere('_id', widget.user["_id"]))
+                            .toList();
 
-                        // Go to the login page
-                        // Navigator.pop(context);
+                        print(newUser);
+
+                        // Push to home page with user data
+                        Navigator.pushNamed(context, '/main', arguments: newUser[0]);
                       },
                       child: const Text('Mettre à jour'),
                     ),
