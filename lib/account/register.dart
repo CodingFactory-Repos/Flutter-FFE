@@ -22,6 +22,9 @@ class RegisterPage extends StatefulWidget {
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
+
+
+
 class _RegisterPageState extends State<RegisterPage> {
   // -- Variables --
   TextEditingController usernameController = TextEditingController();
@@ -146,7 +149,24 @@ class _RegisterPageState extends State<RegisterPage> {
           width: 300,
           child: Column(
             children: <Widget>[
-              Image.asset('assets/logo.png', width: 200, height: 200),
+              //image asset button to go back to login page
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, '/chose_image');
+
+                }, // Handle your callback.
+                splashColor: Colors.brown.withOpacity(0.5),
+                child: Ink(
+                  height: 200,
+                  width: 200,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/profile.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
               Container(
                 padding: const EdgeInsets.only(top: 20, bottom: 20),
                 child: const Text(

@@ -66,6 +66,11 @@ flutter:
     - .env
     - assets/logo.png
     - assets/images/juan.png
+    - assets/images/profile.png
+    - assets/images/user.png
+    - assets/images/horse1.png
+    - assets/images/horse2.png
+    - assets/images/horse3.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

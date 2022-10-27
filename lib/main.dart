@@ -5,6 +5,7 @@ import 'account/login.dart';
 import 'account/mdtp_oublie.dart';
 import 'account/register.dart';
 import 'mongodb.dart';
+import 'account/chose_image.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginPage(db: db, title: 'Se connecter'),
         '/register': (context) => RegisterPage(db: db, title: 'S\'inscrire'),
         '/mdtp_oublie': (context) => mdtpPage(db: db, title: 'Mot de passe oublier'),
+        '/chose_image': (context) => ChoseImage(db: db, title: 'Choisir une image'),
       },
       theme: ThemeData(
         // This is the theme of your application.
