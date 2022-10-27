@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'addEvent.dart';
 import 'home.dart';
 import 'account/login.dart';
 import 'account/mdtp_oublie.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         '/register': (context) => RegisterPage(db: db, title: 'S\'inscrire'),
         '/mdtp_oublie': (context) => mdtpPage(db: db, title: 'Mot de passe oublier'),
         '/chose_image': (context) => ChoseImage(db: db, title: 'Choisir une image'),
+        '/addEvent': (context) => AddEventPage(db: db, user: user, title: 'Ajouter un événement',),
       },
       theme: ThemeData(
         // This is the theme of your application.
