@@ -195,53 +195,56 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                       // Button to login
                       Container(
                         child: ElevatedButton(
-                          onPressed: () async {
-                            // Create loading dialog
-                            // showDialog(
-                            //   context: context,
-                            //   barrierDismissible: false,
-                            //   builder: (BuildContext context) {
-                            //     return const Center(
-                            //       child: CircularProgressIndicator(),
-                            //     );
-                            //   },
-                            // );
+                      onPressed: () async {
+                        // Create loading dialog
+                        // showDialog(
+                        //   context: context,
+                        //   barrierDismissible: false,
+                        //   builder: (BuildContext context) {
+                        //     return const Center(
+                        //       child: CircularProgressIndicator(),
+                        //     );
+                        //   },
+                        // );
 
-                            // for (var i = 0; i < widget.user['dpHorse'].length; i++) {
-                            //   print(widget.user['dpHorse'][i]);
-                            //
-                            //   var horse = await widget.db.collection('horse').find(MongoDatabase.searchWhere('_id', widget.user['dpHorse'][i])).toList();
-                            //   print(horse);
-                            // }
 
-                            var phoneNumber = phoneNumberController.text;
-                            var age = ageController.text;
-                            var linkFfe = linkFfeController.text;
+                          // for (var i = 0; i < widget.user['dpHorse'].length; i++) {
+                          //   print(widget.user['dpHorse'][i]);
+                          //
+                          //   var horse = await widget.db.collection('horse').find(MongoDatabase.searchWhere('_id', widget.user['dpHorse'][i])).toList();
+                          //   print(horse);
+                          // }
 
-                            await widget.db.collection('user').updateOne(
-                                MongoDatabase.searchWhere(
-                                    '_id', widget.user["_id"]),
-                                {
-                                  '\$set': {
-                                    'username': usernameController.text,
-                                    'email': emailController.text,
-                                    'password': passwordController.text,
-                                    'phoneNumber': int.parse(phoneNumber),
-                                    'age': int.parse(age),
-                                    'linkFfe': linkFfe,
-                                    'image': image,
-                                  }
-                                });
+                        var phoneNumber = phoneNumberController.text;
+                        var age = ageController.text;
+                        var linkFfe = linkFfeController.text;
 
-                            // Close the loading dialog
-                            // Navigator.of(context).pop();
-                            // Navigator.of(context).pop();
+                        await widget.db
+                            .collection('user')
+                            .updateOne(MongoDatabase.searchWhere('_id', widget.user["_id"]), {
+                          '\$set': {
+                            'username': usernameController.text,
+                            'email': emailController.text,
+                            'password': passwordController.text,
+                            'phoneNumber': int.parse(phoneNumber),
+                            'age': int.parse(age),
+                            'linkFfe': linkFfe,
+                            'image': image,
+                          }
+                        });
 
-                            // Go to the login page
-                            // Navigator.pop(context);
-                          },
-                          child: const Text('Mettre à jour'),
-                        ),
+                        var newUser = await widget.db
+                            .collection('user')
+                            .find(MongoDatabase.searchWhere('_id', widget.user["_id"]))
+                            .toList();
+
+                        print(newUser);
+
+                        // Push to home page with user data
+                        Navigator.pushNamed(context, '/main', arguments: newUser[0]);
+                      },
+                      child: const Text('Mettre à jour'),
+                    ),
                       ),
                       Container(
                         child: ElevatedButton(
@@ -251,7 +254,7 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                                 .find()
                                 .forEach((user) async {
                               if (widget.user['user']
-                                  .contains(user['ownerHorse'])) {
+                                  .contains(user['ownerHorse']) && user['ownerHorse'] != null) {
                                 await widget.db.collection('horse').deleteMany(
                                     MongoDatabase.searchWhere(
                                         'owner', widget.user["_id"]));
@@ -260,7 +263,8 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                             await widget.db.collection('user').deleteOne(
                                 MongoDatabase.searchWhere(
                                     '_id', widget.user["_id"]));
-                            Navigator.pop(context);
+
+                            Navigator.pushNamed(context, '/main', arguments: null);
                           },
                           child: const Text('Supprimer mon compte'),
                         ),
