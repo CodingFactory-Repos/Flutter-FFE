@@ -87,6 +87,7 @@ class _LoginPageState extends State<LoginPage> {
     Navigator.pushNamed(context, '/main', arguments: emailQuery[0]);
   }
 
+ bool _obscureText = true;
   // -- Widgets --
   @override
   Widget build(BuildContext context) {
@@ -153,17 +154,21 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: TextField(
                   controller: passwordController,
-                  obscureText: true,
+                  obscureText: _obscureText,
                   decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      hintText: 'mot de passe',
-                      suffix: InkWell(
-                      child: const Icon(Icons.visibility, color: Colors.grey, size: 20),
-                  onTap: (){},
-                 ),
+                    border: const OutlineInputBorder(),
+                    hintText: 'mot de passe',
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscureText? Icons.visibility: Icons.visibility_off),
+                      onPressed: () {
+                        _obscureText = !_obscureText;
+                        setState(() {
+                        });
+                      },
+                    ),
+                  ),
                 ),
               ),
-            ),
 
               // Button to login
               ElevatedButton(

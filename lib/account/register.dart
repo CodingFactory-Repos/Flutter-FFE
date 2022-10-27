@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../mongodb.dart';
+import 'chose_image.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key, required this.db, required this.title});
@@ -30,6 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  var image = 'assets/images/profile.png';
 
   // -- Methods --
   /// It creates an account
@@ -53,6 +55,7 @@ class _RegisterPageState extends State<RegisterPage> {
       var username = usernameController.text;
       var email = emailController.text;
       var password = passwordController.text;
+      var images = image;
 
       // Check if all fields are not empty
       if (username.isEmpty || email.isEmpty || password.isEmpty) {
@@ -62,6 +65,13 @@ class _RegisterPageState extends State<RegisterPage> {
             const SnackBar(content: Text('Veuillez remplir tous les champs')));
         return;
       }
+
+      if (images == 'assets/images/profile.png') {
+        // Close loading dialog
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Veuillez choisir une image de profil')));
+        return;}
 
       // Check the email with regex
       if (!RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email)) {
@@ -103,6 +113,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'username': username,
         'email': email,
         'password': password,
+        'image': images,
       });
 
       // Close the loading dialog
@@ -153,16 +164,17 @@ class _RegisterPageState extends State<RegisterPage> {
               //image asset button to go back to login page
               InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, '/chose_image');
-
+                  //Navigator.pushNamed(context, '/chose_image');
+                  _navigateAndDisplaySelection(context);
                 }, // Handle your callback.
                 splashColor: Colors.brown.withOpacity(0.5),
                 child: Ink(
                   height: 200,
                   width: 200,
-                  decoration: const BoxDecoration(
+                  decoration:  BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/profile.png'),
+                      image: AssetImage(image),
+
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -232,5 +244,24 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+  Future<void> _navigateAndDisplaySelection(BuildContext context) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Selection Screen.
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ChoseImage(db: null, title: 'Choisir une image',)),
+    );
+
+    // When a BuildContext is used from a StatefulWidget, the mounted property
+    // must be checked after an asynchronous gap.
+    if (!mounted) return;
+
+    // After the Selection Screen returns a result, hide any previous snackbars
+    // and show the new result.
+
+     setState(() {
+       image = result;
+      });
   }
 }

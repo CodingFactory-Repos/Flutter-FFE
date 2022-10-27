@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TemplatePage extends StatefulWidget {
-  const TemplatePage({super.key, required this.title});
+  const TemplatePage({super.key, required this.db, required this.user, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -14,14 +14,18 @@ class TemplatePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
+  final db;
+  final user;
 
   @override
   State<TemplatePage> createState() => _TemplatePageState();
 }
 
 class _TemplatePageState extends State<TemplatePage> {
+  // -- Variables --
   int _counter = 0;
 
+  // -- Methods --
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -33,6 +37,7 @@ class _TemplatePageState extends State<TemplatePage> {
     });
   }
 
+  // -- Widgets --
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
