@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../mongodb.dart';
+import 'chose_image.dart';
 
 class ModifyProfilePage extends StatefulWidget {
   const ModifyProfilePage({super.key, required this.db, required this.user, required this.title});
@@ -26,17 +27,34 @@ class ModifyProfilePage extends StatefulWidget {
 }
 
 class _ModifyProfilePageState extends State<ModifyProfilePage> {
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   TextEditingController linkFfeController = TextEditingController();
 
- String chosenHorse = '';
+  var image = 'assets/images/profile.png';
 
-  // get horse => getDpHorse();
+ @override
+  void initState() {
+    super.initState();
+    usernameController.text = widget.user['username'];
+    emailController.text = widget.user['email'];
+    passwordController.text = widget.user['password'];
+    chekUser();
+    setState(() {
+      image = widget.user['image'];
+    });
+  }
 
-
-  List <String>dpHorse = [];
-  // var actualDpHorse = dpHorse;
+  void chekUser(){
+    if(widget.user['phoneNumber'] != null || widget.user['age'] != null || widget.user['linkFfe'] != null){
+      phoneNumberController.text = widget.user['phoneNumber'].toString();
+      ageController.text = widget.user['age'].toString();
+      linkFfeController.text = widget.user['linkFfe'];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +97,23 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                 width: 300,
                 child: Column(
                   children: <Widget>[
-                    // Image.asset('assets/logo.png', width: 200, height: 200),
+                    InkWell(
+                      onTap: () {
+                        _navigateAndDisplaySelection(context);
+                      }, // Handle your callback.
+                      splashColor: Colors.brown.withOpacity(0.5),
+                      child: Ink(
+                        height: 200,
+                        width: 200,
+                        decoration:  BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(image),
+
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
                     Container(
                       padding:  const EdgeInsets.only(top: 20, bottom: 20),
                       child:   const Text(
@@ -94,6 +128,37 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                     Container(
                       padding: const EdgeInsets.only(top: 10, bottom: 10),
                       child: TextField(
+                        controller: usernameController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Nom d\'utilisateur',
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      child: TextField(
+                        controller: emailController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Email',
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      child: TextField(
+                        controller: passwordController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Mot de passe',
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      child: TextField(
+                        // initialValue: widget.user['phone'],
                         controller: phoneNumberController,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
@@ -101,7 +166,6 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                         ),
                       ),
                     ),
-
                     Container(
                       padding: const EdgeInsets.only(top: 10, bottom: 10),
                       child: TextField(
@@ -112,7 +176,6 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                         ),
                       ),
                     ),
-
                     Container(
                       padding: const EdgeInsets.only(top: 10, bottom: 10),
                       child: TextField(
@@ -123,7 +186,6 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                         ),
                       ),
                     ),
-
                     // Button to login
                     ElevatedButton(
                       onPressed: () async {
@@ -146,7 +208,6 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                           //   print(horse);
                           // }
 
-
                         var phoneNumber = phoneNumberController.text;
                         var age = ageController.text;
                         var linkFfe = linkFfeController.text;
@@ -154,7 +215,15 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                         await widget.db
                             .collection('user')
                             .updateOne(MongoDatabase.searchWhere('_id', widget.user["_id"]), {
-                          '\$set': {'phoneNumber': int.parse(phoneNumber), 'age': int.parse(age), 'linkFfe': linkFfe}
+                          '\$set': {
+                            'username': usernameController.text,
+                            'email': emailController.text,
+                            'password': passwordController.text,
+                            'phoneNumber': int.parse(phoneNumber),
+                            'age': int.parse(age),
+                            'linkFfe': linkFfe,
+                            'image': image,
+                          }
                         });
 
                         // Close the loading dialog
@@ -166,145 +235,24 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
                       },
                       child: const Text('Mettre à jour'),
                     ),
-
-                        Container(
-                          padding: const EdgeInsets.only(top: 10, bottom: 5, right: 10, left: 10),
-                          child: ElevatedButton(
-                            onPressed: () async {
-
-                              // List <String>dpHorse = [];
-                              // for (var i = 0; i < widget.user['dpHorse'].length; i++) {
-                              //   // print(widget.user['dpHorse'][i]);
-                              //
-                              //   var horse = await widget.db.collection('horse')
-                              //       .find(MongoDatabase.searchWhere(
-                              //       '_id', widget.user['dpHorse'][i]))
-                              //       .toList();
-                              //   // print('debut');
-                              //   // print(horse);
-                              //   // // print('-------------------');
-                              //   // // print(horse[1]);
-                              //   // print('fin');
-                              //   dpHorse.add(horse[0]['name']);
-                              // }
-                              // // print(dpHorse);
-                              //
-                              // // dpHorse.add(getDpHorse().toString());
-                              //
-                              // // print(dpHorse);
-                              //
-                              // // var listDpHorse = dpHorse.fromJson(dpHorse);
-                              // print(dpHorse);
-
-                              getDpHorse();
-                              var actualDpHorse = dpHorse[0];
-
-                              // print(dpHorse[0]);
-
-                              showDialog(context: context, builder: (context)=>  AlertDialog(
-                                title: const Text('Modifier un cheval'),
-                                content: Column(
-                                  children:     [
-                                    DropdownButton<String>(
-                                      items: dpHorse.map <DropdownMenuItem<String>>((String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      }).toList(),
-                                      value: actualDpHorse,
-                                      onChanged: (String? value) {
-                                        // This is called when the user selects an item.
-                                        setState(() {
-                                          actualDpHorse = value!;
-                                          print(actualDpHorse);
-                                          print(value);
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                  // children: [
-                                  //   FutureBuilder(future: getDpHorse(),builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                  //     if (snapshot.hasData) {
-                                  //       return ListView.builder(
-                                  //         itemCount: snapshot.data.length,
-                                  //           itemBuilder: (BuildContext context, int index) {
-                                  //             return ListTile(
-                                  //               title: Text(snapshot.data[index]['name']),
-                                  //             );
-                                  //           },
-                                  //       );
-                                  //     } else {
-                                  //       return const CircularProgressIndicator();
-                                  //     }
-                                  //   },
-                                  //   ),
-                                  // ],
-
-                                  // const <Widget>[
-                                  //   // DropdownButton<String>(
-                                  //   //   items: getDpHorse().map <DropdownMenuItem<String>>((String value) {
-                                  //   //     return DropdownMenuItem<String>(
-                                  //   //       value: value,
-                                  //   //       child: Text(value),
-                                  //   //     );
-                                  //   //   }).toList(),
-                                  //   //   value: getDpHorse()[0],
-                                  //   //   onChanged: (String? value) {
-                                  //   //     // This is called when the user selects an item.
-                                  //   //     setState(() {
-                                  //   //       chosenHorse = value!;
-                                  //   //     });
-                                  //   //   },
-                                  //   // ),
-                                  //   // Text(getDpHorse()),
-                                  //   TextField(
-                                  //     decoration:  InputDecoration(
-                                  //       border: OutlineInputBorder(),
-                                  //       labelText: 'Nom',
-                                  //     ),
-                                  //   ),
-                                  // ],
-                                ),
-                              ));
-                            },
-                            child: const Text('Modifier un cheval'),
-                          ),
-                        ),
-
-                        Container(
-                          padding: const EdgeInsets.only(top: 5, bottom: 10, right: 10, left: 10),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Ajouter un cheval'),
-                          ),
-                        ),
-                      ],
-                    ),
+                  ],
                 ),
               ),
+            ),
           ]
         ),
       ),
     );
   }
-
-  Future getDpHorse() async {
-    if (dpHorse.isNotEmpty){
-
-      dpHorse.removeRange(0, dpHorse.length);
-    }
-    for (var i = 0; i < widget.user['dpHorse'].length; i++) {
-    // print(widget.user['dpHorse'][i]);
-
-      var horse = await widget.db.collection('horse').find(MongoDatabase.searchWhere('_id', widget.user['dpHorse'][i])).toList();
-      dpHorse.add(horse[0]['name']);
-      print (dpHorse);
-
-      return (dpHorse);
-    }
+  Future<void> _navigateAndDisplaySelection(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ChoseImage(db: null, title: 'Choisir une image',)),
+    );
+    
+    if (!mounted) return;
+    setState(() {
+      image = result;
+    });
   }
-
 }
