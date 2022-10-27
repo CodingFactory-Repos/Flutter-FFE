@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'addHorse.dart';
 import 'home.dart';
 import 'account/login.dart';
 import 'account/mdtp_oublie.dart';
@@ -38,8 +39,10 @@ class MyApp extends StatelessWidget {
         '/register': (context) => RegisterPage(db: db, title: 'S\'inscrire'),
         '/mdtp_oublie': (context) => mdtpPage(db: db, title: 'Mot de passe oublier'),
         '/modify_profile': (context) => ModifyProfilePage(db: db, user: user, title: 'Modifier le profil'),
-        '/myHorse': (context) => MyHorsePage(db: db, user: user, title: 'Mes chevaux'),
         '/chose_image': (context) => ChoseImage(db: db, title: 'Choisir une image'),
+
+        '/myHorse': (context) => MyHorsePage(db: db, user: user, title: 'Mes chevaux'),
+        '/addHorse': (context) => AddHorsePage(db: db, user: user, title: 'Ajouter un cheval'),
       },
       theme: ThemeData(
         // This is the theme of your application.
