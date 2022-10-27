@@ -22,21 +22,47 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
+  // -- Variables --
+  var feed = [];
+  var feedAndUsers = [];
 
   @override
   void initState() {
     super.initState();
+    getFeed();
+    getFeedAndUsers();
   }
 
-  void _incrementCounter() {
+  // -- Methods --
+  void getFeed() async {
+    var feed = await widget.db.collection('feed').find().toList();
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      this.feed = feed;
+    });
+  }
+
+  void getFeedAndUsers() async {
+    var users = await widget.db.collection('user').find().toList();
+    var feedAndUsers = [];
+
+    for (var i = 0; i < feed.length; i++) {
+      feedAndUsers.add(feed[i]);
+    }
+
+    for (var i = 0; i < users.length; i++) {
+      // Convert acountCreatedAt to date
+      users[i]['date'] = users[i]['accountCreatedAt'];
+      users[i].remove('accountCreatedAt');
+
+      // Add user to feedAndUsers
+      feedAndUsers.add(users[i]);
+    }
+
+    // Sort feedAndUsers by date
+    feedAndUsers.sort((a, b) => a['date'].compareTo(b['date']));
+
+    setState(() {
+      this.feedAndUsers = feedAndUsers;
     });
   }
 
@@ -72,26 +98,154 @@ class _HomePageState extends State<HomePage> {
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Hi ${widget.user['username']}!',
+            Container(
+              // Create text en align left
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
+              child: Text(
+                'Welcome ${widget.user['username']}',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+
+
+            Expanded(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: ListView(
+                // This next line does the trick.
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 20.0),
+                    height: 250.0,
+                    child: ListView(
+                      // This next line does the trick.
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        // In container, create a border rounded card with a image, title and a subtitle
+                        for (var item in feed)
+                          if (item['type'] == "competition")
+                            SizedBox(
+                              width: 300.0,
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                child: Wrap(
+                                  children: <Widget>[
+                                    // Add image with border
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(15.0),
+                                        topRight: Radius.circular(15.0),
+                                      ),
+                                      child: Image.asset(
+                                          'assets/images/competition-banner.jpg'),
+                                    ),
+                                    ListTile(
+                                      title: Text("${item['title']}"),
+                                      subtitle: Container(
+                                        // Add the item description and the item location
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text("${item['description']}"),
+                                            Container(
+                                              padding: const EdgeInsets.only(
+                                                  top: 5, bottom: 5),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  const Icon(
+                                                    Icons.location_on,
+                                                    size: 15,
+                                                  ),
+                                                  Text(
+                                                      "${item['location']} - "),
+                                                  const Icon(
+                                                    Icons.calendar_today,
+                                                    size: 15,
+                                                  ),
+                                                  Text(item['date']
+                                                      .toString()
+                                                      .substring(0, 10)
+                                                      .replaceAll("-", "/")),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                            ],
+                          ),
+                        ),
+
+                        Container(
+                          // Create text en align left
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(
+                              top: 5, bottom: 5, left: 10),
+                          child: const Text(
+                            'Pour toi',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+
+                        // In container, create a border rounded card with a image, title and a subtitle
+                        for (var item in feedAndUsers)
+                          // If the date is depassed, don't show the item
+                          if (item['date'].isAfter(
+                              DateTime.now().add(const Duration(hours: -12))))
+                            SizedBox(
+                                width: 300.0,
+                                // If the item is have username, it's a user and create card with user icon on left and user username as title on right
+                                child: item['username'] != null
+                                    ? Card(
+                                        child: ListTile(
+                                          leading: const Icon(Icons.person,
+                                              size: 50),
+                                          title: Text("${item['username']}",
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                          subtitle: Text(
+                                              "Nous a rejoins le ${item['date'].toString().substring(0, 10).replaceAll("-", "/")}"),
+                                        ),
+                                      )
+                                    : Card(
+                                        // If the item is have title, it's a competition and create card with competition icon on left and competition title as title on right
+                                        child: ListTile(
+                                          leading:
+                                              const Icon(Icons.flag, size: 50),
+                                          title: Text("${item['title']}",
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                          subtitle: Text(
+                                              "A lieu le ${item['date'].toString().substring(0, 10).replaceAll("-", "/")}"),
+                                        ),
+                                      )),
+                      ],
+              )
+              )
+            )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
