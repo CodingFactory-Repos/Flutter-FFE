@@ -5,6 +5,7 @@ import 'account/login.dart';
 import 'account/mdtp_oublie.dart';
 import 'account/register.dart';
 import 'account/modify_profile.dart';
+import 'package:flutter_ffe/myHorse.dart';
 import 'mongodb.dart';
 
 Future<void> main() async {
@@ -31,11 +32,12 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       routes: {
         '/main': (context) => MyApp(db: db),
-        '/home': (context) => HomePage(db: db, user: user, title: 'UwU', ),
+        '/home': (context) => HomePage(db: db, user: user, title: 'Welcome ${user!['username']}', ),
         '/login': (context) => LoginPage(db: db, title: 'Se connecter'),
         '/register': (context) => RegisterPage(db: db, title: 'S\'inscrire'),
         '/mdtp_oublie': (context) => mdtpPage(db: db, title: 'Mot de passe oublier'),
         '/modify_profile': (context) => ModifyProfilePage(db: db, user: user, title: 'Modifier le profil'),
+        '/myHorse': (context) => MyHorsePage(db: db, user: user, title: 'Mes chevaux'),
       },
       theme: ThemeData(
         // This is the theme of your application.
@@ -54,7 +56,7 @@ class MyApp extends StatelessWidget {
         "username": "username",
         "email": "developer@email.com",
         "password": "password",
-      } : user, title: 'UwU'),
+      } : user, title: 'Welcome ${user!['username']}'),
       debugShowCheckedModeBanner: false,
     );
   }
