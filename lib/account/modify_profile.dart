@@ -44,7 +44,11 @@ class _ModifyProfilePageState extends State<ModifyProfilePage> {
     passwordController.text = widget.user['password'];
     chekUser();
     setState(() {
-      image = widget.user['image'];
+      if(widget.user['image'] != null) {
+        image = widget.user['image'];
+      }else{
+        image = 'assets/images/profile.png';
+      }
     });
   }
 
