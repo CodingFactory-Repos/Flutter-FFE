@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   // -- Methods --
   void getFeed() async {
     var feed = await widget.db.collection('feed').find().toList();
+
     setState(() {
       this.feed = feed;
     });

@@ -25,8 +25,13 @@ class AddEventPage extends StatefulWidget {
 
 class _AddEventPageState extends State<AddEventPage> {
   // -- Variables --
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController pickedDateController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
+  TextEditingController plotController = TextEditingController();
+  TextEditingController timeController = TextEditingController();
+  TextEditingController disciplineController = TextEditingController();
 
   // -- Methods --
   /// > The function creates a loading dialog, checks if the email and password are
@@ -36,22 +41,26 @@ class _AddEventPageState extends State<AddEventPage> {
   ///   The user's information
   addEvent() async {
     // Create loading dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
+    // showDialog(
+    //   context: context,
+    //   barrierDismissible: false,
+    //   builder: (BuildContext context) {
+    //     return const Center(
+    //       child: CircularProgressIndicator(),
+    //     );
+    //   },
+    // );
 
-    // Check if the username and email is already taken
-    var email = emailController.text;
-    var password = passwordController.text;
+    var name = nameController.text;
+    var description = descriptionController.text;
+    var date = DateTime.parse(pickedDateController.text);
+    var location = locationController.text;
+    var plot = plotController.text;
+    var time = int.parse(timeController.text);
+    var discipline = disciplineController.text;
 
     // Check if all fields are not empty
-    if (email.isEmpty || password.isEmpty) {
+    if (name.isEmpty || description.isEmpty || date == null || location.isEmpty || plot.isEmpty || time == null || discipline.isEmpty) {
       // Close loading dialog
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
@@ -59,8 +68,21 @@ class _AddEventPageState extends State<AddEventPage> {
       return;
     }
 
+    // Add event to database
+    await widget.db.collection('feed').insertOne({
+      'type': 'competition',
+      'title': name,
+      'description': description,
+      'date': date,
+      'location': location,
+      'plot': plot,
+      'time': time,
+      'discipline': discipline,
+      'author_id': widget.user['_id']
+    });
+
     // Close the loading dialog
-    Navigator.of(context).pop();
+    // Navigator.of(context).pop();
 
     // Send emailQuery[0] to the home.dart
     Navigator.pushNamed(context, '/home');
@@ -106,7 +128,7 @@ class _AddEventPageState extends State<AddEventPage> {
               Container(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: TextField(
-                  controller: emailController,
+                  controller: nameController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Nom de l\'événement',
@@ -114,15 +136,195 @@ class _AddEventPageState extends State<AddEventPage> {
                 ),
               ),
 
-              // Create a date picker
               Container(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: TextField(
-                  controller: passwordController,
+                  controller: descriptionController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Date de l\'événement',
+                    labelText: 'Description de l\'événement',
                   ),
+                ),
+              ),
+
+              // Create a date picker with a calandar
+              Container(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                width: 300,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        side: const BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    elevation: MaterialStateProperty.all<double>(0),
+                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                      const EdgeInsets.only(top: 10, bottom: 10),
+                    ),
+                  ),
+                  onPressed: () async {
+                    // Show a date picker with DateController
+                    var pickedDate = (await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(DateTime.now().year),
+                      lastDate: DateTime(DateTime.now().year + 5),
+                    ))
+                        .toString();
+
+                    setState(() {
+                      if (pickedDate != "null") {
+                        pickedDateController.text = pickedDate;
+                      }
+                    });
+                  },
+                  child: Text(pickedDateController.text.isEmpty
+                      ? 'Choisir une date'
+                      : 'Date choisie: ${pickedDateController.text.substring(0, 10).replaceAll('-', '/')}'),
+                ),
+              ),
+
+              Container(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: TextField(
+                  controller: timeController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Temps de l\'événement',
+                  ),
+                ),
+              ),
+
+              Container(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: TextField(
+                  controller: locationController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Lieu de l\'événement',
+                  ),
+                ),
+              ),
+
+              // Type of plot (Carrière, Manège) in a dropdown menu
+              Container(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                width: 300,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        side: const BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    elevation: MaterialStateProperty.all<double>(0),
+                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                      const EdgeInsets.only(top: 10, bottom: 10),
+                    ),
+                  ),
+                  onPressed: () async {
+                    // Show a dropdown menu with plotController
+                    var plot = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SimpleDialog(
+                          title: const Text('Séléctionner un type de terrain'),
+                          children: <Widget>[
+                            SimpleDialogOption(
+                              onPressed: () {
+                                Navigator.pop(context, 'Carrière');
+                              },
+                              child: const Text('Carrière'),
+                            ),
+                            SimpleDialogOption(
+                              onPressed: () {
+                                Navigator.pop(context, 'Manège');
+                              },
+                              child: const Text('Manège'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    setState(() {
+                      if (plot != null) {
+                        plotController.text = plot;
+                      }
+                    });
+                  },
+                  child: Text(plotController.text.isEmpty
+                      ? 'Choisir un type de terrain'
+                      : 'Type de terrain: ${plotController.text}'),
+                ),
+              ),
+
+              // Type of discipline (Dressage / Saut d’obstacle / Endurance) in a dropdown menu
+              Container(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                width: 300,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        side: const BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    elevation: MaterialStateProperty.all<double>(0),
+                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                      const EdgeInsets.only(top: 10, bottom: 10),
+                    ),
+                  ),
+                  onPressed: () async {
+                    // Show a dropdown menu with disciplineController
+                    var discipline = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SimpleDialog(
+                          title: const Text('Séléctionner une discipline'),
+                          children: <Widget>[
+                            SimpleDialogOption(
+                              onPressed: () {
+                                Navigator.pop(context, 'Dressage');
+                              },
+                              child: const Text('Dressage'),
+                            ),
+                            SimpleDialogOption(
+                              onPressed: () {
+                                Navigator.pop(context, 'Saut d’obstacle');
+                              },
+                              child: const Text('Saut d’obstacle'),
+                            ),
+                            SimpleDialogOption(
+                              onPressed: () {
+                                Navigator.pop(context, 'Endurance');
+                              },
+                              child: const Text('Endurance'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    setState(() {
+                      if (discipline != null) {
+                        disciplineController.text = discipline;
+                      }
+                    });
+                  },
+                  child: Text(disciplineController.text.isEmpty
+                      ? 'Choisir une discipline'
+                      : 'Discipline: ${disciplineController.text}'),
                 ),
               ),
 
