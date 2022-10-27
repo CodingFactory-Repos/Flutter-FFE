@@ -114,6 +114,8 @@ class _RegisterPageState extends State<RegisterPage> {
         'email': email,
         'password': password,
         'image': images,
+        'dbHorse': [],
+        'ownerHorse': [],
       });
 
       // Close the loading dialog
