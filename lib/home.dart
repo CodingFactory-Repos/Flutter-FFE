@@ -22,21 +22,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
+  // -- Variables --
+  var feed = [];
+  var feedAndUsers = [];
 
   @override
   void initState() {
     super.initState();
+    getFeed();
   }
 
-  void _incrementCounter() {
+  // -- Methods --
+  void getFeed() async {
+    var feed = await widget.db.collection('feed').find().toList();
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      this.feed = feed;
     });
   }
 
@@ -81,26 +81,115 @@ class _HomePageState extends State<HomePage> {
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Hi ${widget.user['username']}!',
+            Container(
+              // Create text en align left
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
+              child: Text(
+                'Welcome ${widget.user['username']}',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+
+
+            Expanded(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: ListView(
+                // This next line does the trick.
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 20.0),
+                    height: 250.0,
+                    child: ListView(
+                      // This next line does the trick.
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        // In container, create a border rounded card with a image, title and a subtitle
+                        for (var item in feed)
+                          if (item['type'] == "competition")
+                            SizedBox(
+                              width: 300.0,
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                child: Wrap(
+                                  children: <Widget>[
+                                    // Add image with border
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(15.0),
+                                        topRight: Radius.circular(15.0),
+                                      ),
+                                      child: Image.asset(
+                                          'assets/images/competition-banner.jpg'),
+                                    ),
+                                    ListTile(
+                                      title: Text("${item['title']}"),
+                                      subtitle: Container(
+                                        // Add the item description and the item location
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text("${item['description']}"),
+                                            Container(
+                                              padding: const EdgeInsets.only(
+                                                  top: 5, bottom: 5),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  const Icon(
+                                                    Icons.location_on,
+                                                    size: 15,
+                                                  ),
+                                                  Text(
+                                                      "${item['location']} - "),
+                                                  const Icon(
+                                                    Icons.calendar_today,
+                                                    size: 15,
+                                                  ),
+                                                  Text(item['date']
+                                                      .toString()
+                                                      .substring(0, 10)
+                                                      .replaceAll("-", "/")),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                      ],
+                    ),
+                  ),
+
+                  // In container, create a border rounded card with a image, title and a subtitle
+                  for (var item in feed)
+                    SizedBox(
+                      width: 300.0,
+                      child: Card(
+                        child: ListTile(
+                          leading: const FlutterLogo(size: 56.0),
+                          title: Text("${item["date"]}}"),
+                        ),
+                      ),
+                    ),
+                ],
+              )
+              )
+            )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

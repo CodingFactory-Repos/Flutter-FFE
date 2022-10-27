@@ -96,6 +96,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
       // Add the user to the database
       await widget.db.collection('user').insertOne(<String, dynamic>{
+        'accountCreatedAt': DateTime.now(),
         'username': username,
         'email': email,
         'password': password,
