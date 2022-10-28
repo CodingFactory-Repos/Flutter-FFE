@@ -259,93 +259,9 @@ class _MyHorsePageState extends State<MyHorsePage> {
                                             onPressed: (){
                                               // _navigateAndDisplaySelection(context);
                                               Navigator.pushNamed(context, '/modify_horse', arguments: item);
-
-                                              // showDialog(context: context, builder: (context) => AlertDialog(
-                                              //   title: Text('Modifer ${item['name']}'),
-                                              //   content: Column(
-                                              //     children: [
-                                              //
-                                              //       TextField(
-                                              //         decoration: const InputDecoration(
-                                              //           border: OutlineInputBorder(),
-                                              //           labelText: 'Nom',
-                                              //         ),
-                                              //         controller: nameController,
-                                              //       ),
-                                              //
-                                              //       TextField(
-                                              //         decoration: const InputDecoration(
-                                              //           border: OutlineInputBorder(),
-                                              //           labelText: 'Age',
-                                              //         ),
-                                              //         controller: ageController,
-                                              //       ),
-                                              //
-                                              //       TextField(
-                                              //         decoration: const InputDecoration(
-                                              //           border: OutlineInputBorder(),
-                                              //           labelText: 'robe',
-                                              //         ),
-                                              //         controller: robeController,
-                                              //       ),
-                                              //
-                                              //       TextField(
-                                              //         decoration: const InputDecoration(
-                                              //           border: OutlineInputBorder(),
-                                              //           labelText: 'Race',
-                                              //         ),
-                                              //         controller: raceController,
-                                              //       ),
-                                              //       TextField(
-                                              //         decoration: const InputDecoration(
-                                              //           border: OutlineInputBorder(),
-                                              //           labelText: 'Sexe',
-                                              //         ),
-                                              //         controller: sexeController,
-                                              //       ),
-                                              //
-                                              //       // Add checkbox
-                                              //       CheckboxListTile(
-                                              //         title: const Text('dressage'),
-                                              //         value: dressage,
-                                              //         onChanged: (bool? value) {
-                                              //           setState(() {
-                                              //             dressage = value!;
-                                              //             print(dressage);
-                                              //           });
-                                              //         },
-                                              //       ),
-                                              //       CheckboxListTile(
-                                              //         title: const Text('Saut d’obstacle'),
-                                              //         value: saut,
-                                              //         onChanged: (bool? value) {
-                                              //           setState(() {
-                                              //             saut = value!;
-                                              //             print(saut);
-                                              //           });
-                                              //         },
-                                              //       ),
-                                              //       Checkbox(
-                                              //         checkColor: Colors.white,
-                                              //         fillColor: MaterialStateProperty.resolveWith(getColor),
-                                              //         value: endurance,
-                                              //         onChanged: (bool? value) {
-                                              //           setState(() {
-                                              //             endurance = value!;
-                                              //             print(endurance);
-                                              //           });
-                                              //         },
-                                              //       ),
-                                              //
-                                              //       ElevatedButton(onPressed: (){
-                                              //
-                                              //       }, child: const Text('Modifier'))
-                                              //     ],
-                                              //   ),
-                                              // ));
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red,
+                                              backgroundColor: Colors.orange,
                                             ),
                                             child: const Text('Modifier'),
                                           ),
@@ -475,7 +391,85 @@ class _MyHorsePageState extends State<MyHorsePage> {
                                             Icons.male,
                                             size: 15,
                                           ),
-                                        Text(" ${item['sexe']}")
+                                        Text(" ${item['sexe']}"),
+                                        Container(
+                                          padding:  const EdgeInsets.only(left: 80),
+                                          //change color of button
+                                          child:  ElevatedButton(
+                                            onPressed: () async {
+                                              // _navigateAndDisplaySelection(context);
+                                              // Navigator.pushNamed(context, '/modify_horse', arguments: item);
+
+                                              // myHorse['dp']!.add(item);
+
+                                              var myNewHorse = [];
+
+                                              for (var i = 0; i < myHorse['dp']!.length; i++) {
+                                                myNewHorse.add(myHorse['dp']![i]['_id']);
+                                              }
+
+                                              myNewHorse.add(item['_id']);
+
+                                              print(myNewHorse);
+
+                                              await widget.db.collection('user').updateOne(
+                                                  MongoDatabase.searchWhere('_id', widget.user['_id']), {
+                                                '\$set': { 'dpHorse': myNewHorse }
+                                              });
+
+                                              setState(() {
+                                                myHorse['dp']!.add(item);
+                                                unownedHorse.remove(item);
+                                              });
+
+                                              print(item['_id']);
+
+
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.orange,
+                                            ),
+                                            child: const Text('+ DP'),
+                                          ),
+                                        ),
+                                        Container(
+                                          padding:  const EdgeInsets.only(left: 20),
+                                          //change color of button
+                                          child:  ElevatedButton(
+                                            onPressed: () async {
+                                              // _navigateAndDisplaySelection(context);
+                                              // Navigator.pushNamed(context, '/modify_horse', arguments: item);
+
+                                              var myNewHorse = [];
+
+                                              for (var i = 0; i < myHorse['owned']!.length; i++) {
+                                                myNewHorse.add(myHorse['owned']![i]['_id']);
+                                              }
+
+                                              myNewHorse.add(item['_id']);
+
+                                              print(myNewHorse);
+
+                                              await widget.db.collection('user').updateOne(
+                                                  MongoDatabase.searchWhere('_id', widget.user['_id']), {
+                                                '\$set': { 'ownerHorse': myNewHorse }
+                                              });
+
+                                              setState(() {
+                                                myHorse['owned']!.add(item);
+                                                unownedHorse.remove(item);
+                                              });
+
+                                              print(item['_id']);
+
+
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.orange,
+                                            ),
+                                            child: const Text('+ owner'),
+                                          ),
+                                        )
                                       ],
                                     ),
                                   ),
