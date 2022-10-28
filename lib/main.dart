@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'addEvent.dart';
 import 'addHorse.dart';
+import 'dashboard/allHorses.dart';
+import 'dashboard/allUsers.dart';
 import 'home.dart';
 import 'account/login.dart';
 import 'account/mdtp_oublie.dart';
@@ -46,6 +48,8 @@ class MyApp extends StatelessWidget {
         '/myHorse': (context) => MyHorsePage(db: db, user: user, title: 'Mes chevaux'),
         '/addHorse': (context) => AddHorsePage(db: db, user: user, title: 'Ajouter un cheval'),
         '/modify_horse': (context) => ModifyHorsePage(db: db, user: user, title: 'Modifier un cheval'),
+        '/allUsers': (context) => AllUsersPage(db: db, user: user, title: 'Tous les utilisateurs'),
+        '/allHorses': (context) => AllHorsesPage(db: db, user: user, title: 'Tous les chevaux'),
       },
       theme: ThemeData(
         // This is the theme of your application.
