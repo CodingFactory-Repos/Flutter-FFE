@@ -258,7 +258,8 @@ class _HomePageState extends State<HomePage> {
                                   child: ListTile(
                                     leading:
                                         const Icon(Icons.flag, size: 50),
-                                    title: Text("${item['title']}",
+                                    // Set the first letter of the title in uppercase
+                                    title: Text("${item['type'].substring(0, 1).toUpperCase()}${item['type'].substring(1)} ${item['title']}",
                                         style: const TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,

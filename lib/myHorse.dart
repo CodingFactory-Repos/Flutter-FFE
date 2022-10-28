@@ -393,7 +393,7 @@ class _MyHorsePageState extends State<MyHorsePage> {
                                           ),
                                         Text(" ${item['sexe']}"),
                                         Container(
-                                          padding:  const EdgeInsets.only(left: 80),
+                                          padding:  const EdgeInsets.only(left: 50),
                                           //change color of button
                                           child:  ElevatedButton(
                                             onPressed: () async {
