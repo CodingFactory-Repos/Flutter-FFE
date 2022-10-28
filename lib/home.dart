@@ -275,20 +275,47 @@ class _HomePageState extends State<HomePage> {
                                 width: 300.0,
                                 // If the item is have username, it's a user and create card with user icon on left and user username as title on right
                                 child: Card(
-                                  // If the item is have title, it's a competition and create card with competition icon on left and competition title as title on right
-                                  child: ListTile(
-                                    leading:
-                                        item['type'] == "competition" ? const Icon(Icons.event, size: 50) : item['type'] == "soiree" ? const Icon(Icons.local_bar, size: 50) : item['type'] == "cours" ? const Icon(Icons.school, size: 50) : const Icon(Icons.person, size: 50),
-                                    // Set the first letter of the title in uppercase
-                                    title: Text("${item['type'].substring(0, 1).toUpperCase()}${item['type'].substring(1)} ${item['title']}",
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        )),
-                                    subtitle: Text(
-                                        "A lieu le ${item['date'].toString().substring(0, 10).replaceAll("-", "/")}"),
-                                  ),
-                                )),
+                                    // If the item is clicked, add check icon
+                                    child: ListTile(
+                                      leading: item['type'] == "competition"
+                                          ? const Icon(Icons.event, size: 50)
+                                          : item['type'] == "soiree"
+                                              ? const Icon(Icons.local_bar,
+                                                  size: 50)
+                                              : item['type'] == "cours"
+                                                  ? const Icon(Icons.school,
+                                                      size: 50)
+                                                  : const Icon(Icons.person,
+                                                      size: 50),
+                                      // Set the first letter of the title in uppercase
+                                      title: Text(
+                                          "${item['type'].substring(0, 1).toUpperCase()}${item['type'].substring(1)} ${item['title']}",
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          )),
+                                      subtitle: Text(
+                                          "A lieu le ${item['date'].toString().substring(0, 10).replaceAll("-", "/")}"),
+                                      trailing: item['checked'] == true
+                                          ? const Icon(Icons.check)
+                                          : null,
+                                      onTap: () async {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    "Dès maintenant, tu participes à ${item['title']}")));
+
+                                        setState(() {
+                                          feed = feed.map((e) {
+                                            if (e['_id'] == item['_id']) {
+                                              e['checked'] = true;
+                                            }
+                                            return e;
+                                          }).toList();
+                                        });
+                                      },
+                                    ),
+                                  )),
                       ],
               )
               )
