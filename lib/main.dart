@@ -8,6 +8,7 @@ import 'account/mdtp_oublie.dart';
 import 'account/register.dart';
 import 'account/modify_profile.dart';
 import 'package:flutter_ffe/myHorse.dart';
+import 'modify_horse.dart';
 import 'mongodb.dart';
 import 'account/chose_image.dart';
 
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         '/addEvent': (context) => AddEventPage(db: db, user: user, title: 'Ajouter un événement',),
         '/myHorse': (context) => MyHorsePage(db: db, user: user, title: 'Mes chevaux'),
         '/addHorse': (context) => AddHorsePage(db: db, user: user, title: 'Ajouter un cheval'),
+        '/modify_horse': (context) => ModifyHorsePage(db: db, user: user, title: 'Modifier un cheval'),
       },
       theme: ThemeData(
         // This is the theme of your application.

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'modify_horse.dart';
 import 'mongodb.dart';
 
 class MyHorsePage extends StatefulWidget {
@@ -25,6 +26,19 @@ class MyHorsePage extends StatefulWidget {
 }
 
 class _MyHorsePageState extends State<MyHorsePage> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController robeController = TextEditingController();
+  TextEditingController raceController = TextEditingController();
+  TextEditingController sexeController = TextEditingController();
+  // TextEditingController specialityController = TextEditingController();
+  TextEditingController pictureController = TextEditingController();
+
+  var dressage = false;
+  var saut = false;
+  var endurance = false;
+
+
   // -- Variables --
   var dpHorse = [];
   var ownerHorse = [];
@@ -34,6 +48,8 @@ class _MyHorsePageState extends State<MyHorsePage> {
   };
   var allHorse = [];
   var unownedHorse = [];
+
+  var horse ='';
 
   @override
   void initState() {
@@ -112,12 +128,24 @@ class _MyHorsePageState extends State<MyHorsePage> {
 
   @override
   Widget build(BuildContext context) {
+    Map? horse = ModalRoute.of(context)?.settings.arguments as Map?;
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return Colors.blue;
+      }
+      return Colors.red;
+    }
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the HomePage object that was created by
@@ -207,6 +235,7 @@ class _MyHorsePageState extends State<MyHorsePage> {
                                         top: 5, bottom: 5),
                                     child: Row(
                                       children: <Widget>[
+
                                         const Icon(
                                           Icons.cake,
                                           size: 15,
@@ -223,6 +252,105 @@ class _MyHorsePageState extends State<MyHorsePage> {
                                             size: 15,
                                           ),
                                         Text(" ${item['sexe']}"),
+                                         Container(
+                                           padding:  const EdgeInsets.only(left: 150),
+                                          //change color of button
+                                          child:  ElevatedButton(
+                                            onPressed: (){
+                                              // _navigateAndDisplaySelection(context);
+                                              Navigator.pushNamed(context, '/modify_horse', arguments: item);
+
+                                              // showDialog(context: context, builder: (context) => AlertDialog(
+                                              //   title: Text('Modifer ${item['name']}'),
+                                              //   content: Column(
+                                              //     children: [
+                                              //
+                                              //       TextField(
+                                              //         decoration: const InputDecoration(
+                                              //           border: OutlineInputBorder(),
+                                              //           labelText: 'Nom',
+                                              //         ),
+                                              //         controller: nameController,
+                                              //       ),
+                                              //
+                                              //       TextField(
+                                              //         decoration: const InputDecoration(
+                                              //           border: OutlineInputBorder(),
+                                              //           labelText: 'Age',
+                                              //         ),
+                                              //         controller: ageController,
+                                              //       ),
+                                              //
+                                              //       TextField(
+                                              //         decoration: const InputDecoration(
+                                              //           border: OutlineInputBorder(),
+                                              //           labelText: 'robe',
+                                              //         ),
+                                              //         controller: robeController,
+                                              //       ),
+                                              //
+                                              //       TextField(
+                                              //         decoration: const InputDecoration(
+                                              //           border: OutlineInputBorder(),
+                                              //           labelText: 'Race',
+                                              //         ),
+                                              //         controller: raceController,
+                                              //       ),
+                                              //       TextField(
+                                              //         decoration: const InputDecoration(
+                                              //           border: OutlineInputBorder(),
+                                              //           labelText: 'Sexe',
+                                              //         ),
+                                              //         controller: sexeController,
+                                              //       ),
+                                              //
+                                              //       // Add checkbox
+                                              //       CheckboxListTile(
+                                              //         title: const Text('dressage'),
+                                              //         value: dressage,
+                                              //         onChanged: (bool? value) {
+                                              //           setState(() {
+                                              //             dressage = value!;
+                                              //             print(dressage);
+                                              //           });
+                                              //         },
+                                              //       ),
+                                              //       CheckboxListTile(
+                                              //         title: const Text('Saut d’obstacle'),
+                                              //         value: saut,
+                                              //         onChanged: (bool? value) {
+                                              //           setState(() {
+                                              //             saut = value!;
+                                              //             print(saut);
+                                              //           });
+                                              //         },
+                                              //       ),
+                                              //       Checkbox(
+                                              //         checkColor: Colors.white,
+                                              //         fillColor: MaterialStateProperty.resolveWith(getColor),
+                                              //         value: endurance,
+                                              //         onChanged: (bool? value) {
+                                              //           setState(() {
+                                              //             endurance = value!;
+                                              //             print(endurance);
+                                              //           });
+                                              //         },
+                                              //       ),
+                                              //
+                                              //       ElevatedButton(onPressed: (){
+                                              //
+                                              //       }, child: const Text('Modifier'))
+                                              //     ],
+                                              //   ),
+                                              // ));
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                            ),
+                                            child: const Text('Modifier'),
+                                          ),
+                                        )
+
                                       ],
                                     ),
                                   ),
@@ -374,4 +502,23 @@ class _MyHorsePageState extends State<MyHorsePage> {
       ),
     );
   }
+  // Future<void> _navigateAndDisplaySelection(BuildContext context) async {
+  //   // Navigator.push returns a Future that completes after calling
+  //   // Navigator.pop on the Selection Screen.
+  //   final result = await Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => const ModifyHorsePage(db: null, title: 'Modifier un cheval', user: null)),
+  //   );
+  //
+  //   // When a BuildContext is used from a StatefulWidget, the mounted property
+  //   // must be checked after an asynchronous gap.
+  //   if (!mounted) return;
+  //
+  //   // After the Selection Screen returns a result, hide any previous snackbars
+  //   // and show the new result.
+  //
+  //   setState(() {
+  //     horse = result;
+  //   });
+  // }
 }
