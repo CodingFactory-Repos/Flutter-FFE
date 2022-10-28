@@ -67,22 +67,6 @@ class _ModifyHorsePageState extends State<ModifyHorsePage> {
       }
     });
 
-    // void findHorseSpecialities(){
-    //   for (var i = 0; i < horse!['specialities'].length; i++) {
-    //     if (horse['specialities'][i] == 'dressage') {
-    //       dressage = true;
-    //     }
-    //     if (horse['specialities'][i] == 'saut') {
-    //       saut = true;
-    //     }
-    //     if (horse['specialities'][i] == 'endurance') {
-    //       endurance = true;
-    //     }
-    //     if (horse['specialities'][i] == 'complet') {
-    //       complet = true;
-    //     }
-    //   }
-    // }
 
     return Scaffold(
       appBar: AppBar(
