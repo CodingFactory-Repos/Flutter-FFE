@@ -278,8 +278,9 @@ class _HomePageState extends State<HomePage> {
                                   // If the item is have title, it's a competition and create card with competition icon on left and competition title as title on right
                                   child: ListTile(
                                     leading:
-                                        const Icon(Icons.flag, size: 50),
-                                    title: Text("${item['title']}",
+                                        item['type'] == "competition" ? const Icon(Icons.event, size: 50) : item['type'] == "soiree" ? const Icon(Icons.local_bar, size: 50) : item['type'] == "cours" ? const Icon(Icons.school, size: 50) : const Icon(Icons.person, size: 50),
+                                    // Set the first letter of the title in uppercase
+                                    title: Text("${item['type'].substring(0, 1).toUpperCase()}${item['type'].substring(1)} ${item['title']}",
                                         style: const TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,

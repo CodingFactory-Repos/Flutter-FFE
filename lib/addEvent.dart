@@ -25,6 +25,7 @@ class AddEventPage extends StatefulWidget {
 
 class _AddEventPageState extends State<AddEventPage> {
   // -- Variables --
+  TextEditingController typeOfEventController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController pickedDateController = TextEditingController();
@@ -40,16 +41,17 @@ class _AddEventPageState extends State<AddEventPage> {
   /// Returns:
   ///   The user's information
   addEvent() async {
+    var typeOfEvent = typeOfEventController.text;
     var name = nameController.text;
     var description = descriptionController.text;
     var date = DateTime.parse(pickedDateController.text);
     var location = locationController.text;
     var plot = plotController.text;
-    var time = int.parse(timeController.text);
+    var time = int.parse(timeController.text != '' ? timeController.text : '0');
     var discipline = disciplineController.text;
 
     // Check if all fields are not empty
-    if (name.isEmpty || description.isEmpty || date == null || location.isEmpty || plot.isEmpty || time == null || discipline.isEmpty) {
+    if (typeOfEvent.isEmpty || name.isEmpty || description.isEmpty || date == null || location.isEmpty) {
       // Close loading dialog
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
@@ -59,7 +61,7 @@ class _AddEventPageState extends State<AddEventPage> {
 
     // Add event to database
     await widget.db.collection('feed').insertOne({
-      'type': 'competition',
+      'type': typeOfEvent,
       'title': name,
       'description': description,
       'date': date.add(Duration(hours: DateTime.now().timeZoneOffset.inHours)),
@@ -113,8 +115,68 @@ class _AddEventPageState extends State<AddEventPage> {
           width: 300,
           child: Column(
             children: <Widget>[
-              // Type of plot (Événement, Soirée) in a dropdown menu
-              
+              // Type of plot (Competition, Soirée, cours) in a dropdown menu
+              Container(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                width: 300,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        side: const BorderSide(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    elevation: MaterialStateProperty.all<double>(0),
+                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                      const EdgeInsets.only(top: 10, bottom: 10),
+                    ),
+                  ),
+                  onPressed: () async {
+                    // Show a dropdown menu with typeOfEventController
+                    var typeOfEvent = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SimpleDialog(
+                          title:
+                              const Text('Séléctionner un type d\'événement'),
+                          children: <Widget>[
+                            SimpleDialogOption(
+                              onPressed: () {
+                                Navigator.pop(context, 'competition');
+                              },
+                              child: const Text('Competition'),
+                            ),
+                            SimpleDialogOption(
+                              onPressed: () {
+                                Navigator.pop(context, 'soiree');
+                              },
+                              child: const Text('Soirée'),
+                            ),
+                            SimpleDialogOption(
+                              onPressed: () {
+                                Navigator.pop(context, 'cours');
+                              },
+                              child: const Text('Cours'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    setState(() {
+                      if (typeOfEvent != null) {
+                        typeOfEventController.text = typeOfEvent;
+                      }
+                    });
+                  },
+                  child: Text(typeOfEventController.text.isEmpty
+                      ? 'Choisir un type d\'événement'
+                      : 'Type d\'événement: ${typeOfEventController.text}'),
+                ),
+              ),
 
               Container(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -179,16 +241,17 @@ class _AddEventPageState extends State<AddEventPage> {
                 ),
               ),
 
-              Container(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: TextField(
-                  controller: timeController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Temps de l\'événement (en Minutes)',
+              if(typeOfEventController.text == 'competition' || typeOfEventController.text == 'cours')
+                Container(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: TextField(
+                    controller: timeController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Temps de l\'événement (en Minutes)',
+                    ),
                   ),
                 ),
-              ),
 
               Container(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -201,8 +264,10 @@ class _AddEventPageState extends State<AddEventPage> {
                 ),
               ),
 
-              // Type of plot (Carrière, Manège) in a dropdown menu
-              Container(
+              if (typeOfEventController.text == 'competition' ||
+                  typeOfEventController.text == 'cours')
+                // Type of plot (Carrière, Manège) in a dropdown menu
+                Container(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 width: 300,
                 child: ElevatedButton(
@@ -257,8 +322,10 @@ class _AddEventPageState extends State<AddEventPage> {
                 ),
               ),
 
-              // Type of discipline (Dressage / Saut d’obstacle / Endurance) in a dropdown menu
-              Container(
+              if (typeOfEventController.text == 'competition' ||
+                  typeOfEventController.text == 'cours')
+                // Type of discipline (Dressage / Saut d’obstacle / Endurance) in a dropdown menu
+                Container(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 width: 300,
                 child: ElevatedButton(
