@@ -217,6 +217,27 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
 
+                        Row(
+                          children: <Widget> [
+                            Container(
+                              padding: const EdgeInsets.only(left: 15, right: 15,bottom: 5),
+                              child: ElevatedButton(onPressed: (){
+
+                                Navigator.pushNamed(context, '/allUsers');
+
+                              }, child: const Text("Voir touts les utilisateurs"))
+                            ),
+                            Container(
+                                padding: const EdgeInsets.only(left: 2,bottom: 5),
+                                child: ElevatedButton(onPressed: (){
+
+                                  Navigator.pushNamed(context, '/allHorses');
+
+                                }, child: const Text("Voir touts les chevaux"))
+                            ),
+                          ],
+                        ),
+
                         Card(
                           child: ListTile(
                             leading: const Icon(Icons.person,
