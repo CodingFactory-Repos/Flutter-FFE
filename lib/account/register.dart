@@ -116,6 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'image': images,
         'dpHorse': [],
         'ownerHorse': [],
+        'isAdmin': false,
       });
 
       // Close the loading dialog
