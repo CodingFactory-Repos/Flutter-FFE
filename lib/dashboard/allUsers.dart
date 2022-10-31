@@ -17,45 +17,36 @@ class _AllUsersPageState extends State<AllUsersPage> {
   var feed = [];
   var lastUser = [{}];
   var allUsers = [];
+  var ownerHorse = [];
 
   @override
   void initState() {
     super.initState();
-    getFeed();
     getLastUser();
     getAllUsers();
+    getOwnerHorse();
   }
 
   // -- Methods --
-  void getFeed() async {
-    var feed = await widget.db.collection('feed').find().toList();
+  void getOwnerHorse() async {
+    var ownerHorse = [];
 
-    // Don't show the feed if the date has already passed
-    for (var i = 0; i < feed.length; i++) {
-      if (feed[i]['date'].isBefore(DateTime.now())) {
-        feed.removeAt(i);
+    if(widget.user['ownerHorse'] != null) {
+      for (var i = 0; i < widget.user['ownerHorse'].length; i++) {
+        var horse = await widget.db.collection('horse').findOne({
+          '_id': widget.user['ownerHorse'][i],
+        });
+
+        ownerHorse.add(horse);
       }
-    }
-
-    // Sort the feed by date (newest first)
-    for (var i = 0; i < feed.length; i++) {
-      for (var j = 0; j < feed.length; j++) {
-        if (feed[i]['date'].isAfter(feed[j]['date'])) {
-          var temp = feed[i];
-          feed[i] = feed[j];
-          feed[j] = temp;
-        }
-      }
-    }
-
-    // limit to 5 items
-    if (feed.length > 5) {
-      feed = feed.sublist(0, 5);
     }
 
     setState(() {
-      this.feed = feed.reversed.toList();
+      this.ownerHorse = ownerHorse;
+      // myHorse['owned']?.addAll(ownerHorse);
     });
+    // print(myHorse['owned']);
+    print(ownerHorse);
   }
 
   void getLastUser() async {
@@ -138,8 +129,22 @@ class _AllUsersPageState extends State<AllUsersPage> {
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             )),
-                        subtitle: Text(
-                            "Nous a rejoins le ${item['accountCreatedAt'] != null ? item['accountCreatedAt'].toString().substring(0, 10).replaceAll("-", "/") : "No date found"}"),
+                        subtitle:
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            // widget.db.collection('horse').remove({
+                            //   '_id': ownerHorse,
+                            // });
+
+                            // print(ownerHorse);
+                            //delete user
+                            widget.db.collection('user').remove({
+                              '_id': item['_id'],
+                            });
+                            getAllUsers();
+                          },
+                        ),
                       ),
                     ),
                 ],

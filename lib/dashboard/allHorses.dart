@@ -111,9 +111,18 @@ class _AllHorsesPageState extends State<AllHorsesPage> {
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             )),
-                        // subtitle: Text(
-                        //     "Possédé par ${item['accountCreatedAt'] != null ? item['accountCreatedAt'].toString().substring(0, 10).replaceAll("-", "/") : "No date found"}"
-                        // ),
+                        subtitle:
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            //delete horse
+                            widget.db.collection('horse').remove({
+                              '_id': item['_id'],
+                            });
+                            getAllHorses();
+
+                          },
+                        ),
                       ),
                     ),
                 ],
